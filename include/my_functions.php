@@ -160,28 +160,33 @@ function undo_magic_quotes(&$a) {
 # Returns TRUE if argument contains only alphabetic characters.
 #
 function is_alpha($v) {
-	return (eregi('[^A-Z]',$v) ? false : true) ;
+	#return (eregi('[^A-Z]',$v) ? false : true) ;
+	#return (preg_match('/[^A-Z]'.'/i',$v,PCRE_CASELESS) ? false : true) ; # Replaced eregi() with preg_match()
+	return (preg_match('/[^A-Z]/i',$v) ? false : true) ;
 }
 
 #
 # Returns TRUE if argument contains only numeric characters.
 #
 function is_num($v) {
-	return (eregi('[^0-9]',$v) ? false : true) ;
+	#return (eregi('[^0-9]',$v) ? false : true) ;
+	return (preg_match('/[^0-9]/',$v) ? false : true) ; # Replaced eregi() with preg_match()
 }
 
 #
 # Returns TRUE if argument contains only alphanumeric characters.
 #
 function is_alnum($v) {
-	return (eregi('[^A-Z0-9]',$v) ? false : true) ;
+	#return (eregi('[^A-Z0-9]',$v) ? false : true) ;
+	return (preg_match('/[^A-Z0-9]/i',$v) ? false : true) ; # Replaced eregi() with preg_match()
 }
 
 #
 # Returns TRUE if argument is in proper e-mail address format.
 #
 function is_email($v) {
-	return (eregi('^[^@ ]+\@[^@ ]+\.[A-Z]{2,4}$',$v) ? true : false);
+	#return (eregi('^[^@ ]+\@[^@ ]+\.[A-Z]{2,4}$',$v) ? true : false);
+	return (preg_match('/^[^@ ]+\@[^@ ]+\.[A-Z]{2,4}$'.'/i',$v) ? true : false); # Replaced eregi() with preg_match()
 }
 
 #
@@ -214,14 +219,18 @@ function is_fqdn($FQDN) {
 # Checks regexp in every element of an array, returns TRUE as soon
 # as a match is found.
 #
-function eregi_array($regexp, $a) {
 
-foreach($a as $e) {
-	if (eregi($regexp,$e)) return true;
-}
-return false;
-}
+function eregi_array($regexp, $arr) {
 
+	foreach ($arr as $elem) {
+		#if (eregi($regexp,$elem))
+		if (! preg_match('/^\/.*\/$/', $regexp)) # if it doesn't begin and end with '/'
+			$regexp = '/'.$regexp.'/'; # pad the $regexp with '/' to prepare for preg_match()
+		if (preg_match($regexp.'i',$elem)) # Replaced eregi() with preg_match()
+			return true;
+	}
+	return false;
+}
 #
 # Reads entire file into a string
 # Same as file_get_contents in php >= 4.3.0
