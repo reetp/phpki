@@ -301,6 +301,8 @@ function CAdb_get_entry($serial) {
 //
 function CAdb_in($email="", $name="") {
 	global $config;
+	$email = escshellcmd($email);
+	$name = escshellcmd($name);
 	$regexp = "^[V].*CN=$name/(Email|emailAddress)=$email";
         $x =exec('egrep '.escshellarg($regexp).' '.$config[index]);
 
@@ -540,7 +542,7 @@ function CA_create_cert($cert_type='email',$country,$province,$locality,$organiz
 	unset($cmd_output);
 	$cmd_output[] = 'Creating certificate request.';
 
-	if ($passwd) {
+	if (($_passwd) && ($_passwd != "''")) {
 		exec(REQ." -new -newkey rsa:$keysize -keyout '$userkey' -out '$userreq' -config '$cnf_file' -days '$expiry_days' -passout pass:$_passwd  2>&1", $cmd_output, $ret);
 	}
 	else {
@@ -565,7 +567,7 @@ function CA_create_cert($cert_type='email',$country,$province,$locality,$organiz
 	if ($ret == 0) {
 		unset($cmd_output);
 		$cmd_output[] = "Creating PKCS12 format certifcate.";
-		if ($passwd) {
+		if (($_passwd) && ($_passwd != "''")) { {
 			$cmd_output[] = "infile: $usercert   keyfile: $userkey   outfile: $userpfx  pass: $_passwd";
 			exec(PKCS12." -export -in '$usercert' -inkey '$userkey' -certfile '$config[cacert_pem]' -caname '$config[organization]' -out '$userpfx' -name $friendly_name -rand '$config[random]' -passin pass:$_passwd -passout pass:$_passwd  2>&1", $cmd_output, $ret);
 		}
@@ -695,7 +697,7 @@ function CA_renew_cert($old_serial,$expiry,$passwd) {
 	if ($ret == 0) {
 		unset($cmd_output);
 		$cmd_output[] = "Creating PKCS12 format certificate.";
-		if ($passwd) {
+		if (($_passwd) && ($_passwd != "''")) {
 			$cmd_output[] = "infile: $usercert   keyfile: $userkey   outfile: $userpfx  pass: $_passwd";
 			exec(PKCS12." -export -in '$usercert' -inkey '$userkey' -certfile '$config[cacert_pem]' -caname '$config[organization]' -out '$userpfx' -name $friendly_name -rand '$config[random]' -passin pass:$_passwd -passout pass:$_passwd  2>&1", $cmd_output, $ret);
 		}
