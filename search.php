@@ -36,8 +36,13 @@ case display:
 
 case 'download':
 	$rec = CAdb_get_entry($serial);
-	upload("$config[cert_dir]/$serial.der", "$rec[common_name] ($rec[email]).cer", 'application/pkix-cert');
+	upload("$config[cert_dir]/$serial.der", "$rec[common_name].cer", 'application/pkix-cert');
         break;
+
+case 'download_pem':
+    $rec = CAdb_get_entry($serial);
+    upload("$config[new_certs_dir]/$serial.pem", "$rec[common_name].pem", 'application/pkix-cert');
+       break;
 
 case search:
 	printHeader('public');
@@ -97,6 +102,7 @@ case search:
 		if ($rec['status'] != 'Revoked') {
 			?>
 			<a href="<?php echo $PHP_SELF?>?stage=download&serial=<?php echo htvar($rec['serial'])?>"><img src=images/download.png alt="Download" title="Download the certificate so that you may send encrypted e-mail"></a>
+			<a href="<?php echo $PHP_SELF?>?stage=download_pem&serial=<?=htvar($rec['serial'])?>"><img src=images/download.png alt="Download (in PEM format)" title="Download in PEM format"></a>
 			<?php
 		}
 		print '</td></tr>';
