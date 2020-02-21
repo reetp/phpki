@@ -49,7 +49,7 @@ case 'display':
 	printHeader(false);
 
 	?>
-       	<center><h2>Certificate Details</h2></center>
+    <center><h2>Certificate Details</h2></center>
 	<center><font color=#0000AA><h3>(#<?php echo $serial?>)<br><?php echo htvar(CA_cert_cname($serial).' <'.CA_cert_email($serial).'>')?> </h3></font></center>
 	<?php
 
@@ -69,19 +69,19 @@ case 'dl-confirm':
 	<h3><font color=red>DO NOT DISTRIBUTE THIS FILE TO THE PUBLIC!</font></h3>
 	<form action="<?php echo $PHP_SELF.'?stage=download&serial='.$serial.'&'.$qstr_sort.'&'.$qstr_filter?>" method=post>
 	<strong>File type: </strong>
-	<td><select name=dl_type>
+	<select name=dl_type>
 	<option value="PKCS#12">PKCS#12 Bundle</option>
 	<option value="PEMCERT">PEM Certificate</option>
 	<option value="PEMKEY">PEM Key</option>
 	<option value="PEMBUNDLE">PEM Bundle</option>
 	<option value="PEMCABUNDLE">PEM Bundle w/Root</option>
 	</select>
-
 	<input type=submit name=submit value="Download">
 	&nbsp; or &nbsp;
 	<input type=submit name=submit value="Go Back">
 	</form>
-	<?php
+
+    <?php
 
 	break;
 
@@ -117,11 +117,11 @@ case 'revoke-form':
 	printHeader('ca');
 
 	?>
-	<h4>You are about to <font color=red>REVOKE</font> the following certificate:</hr>
+	<h4>You are about to <font color=red>REVOKE</font> the following certificate:<hr>
        	<table width=500><tr>
        	<td width=25% style='white-space: nowrap'>
        	<p align=right>
-	Serial Number<br>
+	    Serial Number<br>
        	User's Name<br>
        	Email Address<br>
        	Organization<br>
@@ -134,7 +134,7 @@ case 'revoke-form':
 
 	print '
        	<td>
-	'.htvar($rec[serial]).'<br>
+	    '.htvar($rec[serial]).'<br>
        	'.htvar($rec[common_name]).'<br>
        	'.htvar($rec[email]).'<br>
        	'.htvar($rec[organization]).'<br>
@@ -144,10 +144,10 @@ case 'revoke-form':
        	'.htvar($rec[country]).'<br>
        	</td>
        	</tr></table>
-	<h4>Are you sure?</h4>
+	    <h4>Are you sure?</h4>
        	<p><form action="'.$PHP_SELF.'?'.$qstr_sort.'&'.$qstr_filter.'" method=post>
-	<input type=hidden name=stage value=revoke >
-	<input type=hidden name=serial value='.$serial.' >
+	    <input type=hidden name=stage value=revoke >
+	    <input type=hidden name=serial value='.$serial.' >
        	<input type=submit name=submit value=Yes >&nbsp
        	<input type=submit name=submit value=Cancel>
        	</form>';
@@ -165,8 +165,7 @@ case 'revoke':
 		print "<form action=\"$PHP_SELF?stage=revoke-form&serial=$serial&$qstr_sort&$qstr_filter\" method=post>";
 		?>
 		<font color=#ff0000>
-		<h2>There was an error revoking your certificate
-.</h2></font><br>
+		<h2>There was an error revoking your certificate.</h2></font><br>
 		<blockquote>
 		<h3>Debug Info:</h3>
 		<pre><?php echo $errtxt?></pre>
@@ -204,7 +203,7 @@ case 'renew-form':
 
 	printHeader('ca');
 	?>
-	<body onLoad="self.focus();document.form.passwd.focus()">
+	<body onLoad="self.focus();document.form.passwd.focus();">
 
 	<form action="<?php echo $PHP_SELF.'?'.$qstr_sort.'&'.$qstr_filter?>" method=post name=form>
 	<table width=99%>
@@ -265,13 +264,12 @@ case 'renew-form':
 	</select></td>
 	</tr>
 	<tr>
+		<td>&nbsp</td>
 	<td>
-	<center><input type=submit name=submit value="Submit Request">&nbsp
-	<input type=submit name=submit value="Back"></center>
-	</td>
-	<td>
-	<input type=hidden name=stage value=renew>
-	<input type=hidden name=serial value=<?php echo $serial?>>
+	    <input type=submit name=submit value="Submit Request">&nbsp
+	    <input type=submit name=submit value="Back">
+	    <input type=hidden name=stage value=renew>
+	    <input type=hidden name=serial value=<?php echo $serial?>>
 	</td>
 	</tr>
 	</table>
@@ -292,8 +290,8 @@ case 'renew':
 		print "<form action=\"$PHP_SELF?stage=renew-form&serial=$serial&$qstr_sort&$qstr_filter\" method=post>";
 		?>
 		<font color=#ff0000>
-		<h2>There was an error creating your certificate
-.</h2></font><br>
+		<h2>There was an error creating your certificate.</h2>
+		</font><br>
 		<blockquote>
 		<h3>Debug Info:</h3>
 		<pre><?php echo $errtxt?></pre>
@@ -315,14 +313,13 @@ default:
 	printHeader('ca');
 
 	?>
-	<body onLoad="self.focus();document.filter.search.focus()">
+	<body onLoad="self.focus();document.filter.search.focus();">
 	<table>
 	<tr><th colspan=8><big>CERTIFICATE MANAGEMENT CONTROL PANEL</big></th></tr>
 	<tr><td colspan=8><center>
 	<form action="<?php echo "$PHP_SELF?$qstr_sort"?>" method=get name=filter>
         Search: <input type=text name=search value="<?php echo htvar($search)?>" style="font-size: 11px;" maxlength=60 size=30>
-        &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<input type=checkbox name=show_valid value="V" <?php echo ($show_valid?'checked'
-:'')?>>Valid
+        &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<input type=checkbox name=show_valid value="V" <?php echo ($show_valid?'checked':'')?>>Valid
         &nbsp&nbsp<input type=checkbox name=show_revoked value="R" <?php echo ($show_revoked?'checked':'')?>>Revoked
         &nbsp&nbsp<input type=checkbox name=show_expired value="E" <?php echo ($show_expired?'checked':'')?>>Expired
         &nbsp&nbsp&nbsp&nbsp&nbsp<input type=submit name=submit value="Apply Filter" style="font-size: 11px;">
