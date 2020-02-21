@@ -705,7 +705,7 @@ E-mail: <a href=mailto:someone@somewhere.com>someone@somewhere.com</a>&nbsp;&nbs
 
 	printHeader('setup');
 	?>
-	<form action=<?php echo $PHP_SELF?> method=post>
+	<form action="<?php echo $PHP_SELF?>" method="post">
 	<center><h2>Certificate Authority Initial Setup</h2></center>
 	<table width=99%>
 	<tr>

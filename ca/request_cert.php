@@ -212,7 +212,7 @@ case 'final':
 	                	printHeader();
 
 				?>
-				<form action=<?php echo $PHP_SELF?> method=post>
+				<form action="<?php echo $PHP_SELF?>" method="post">
                 		<font color=#ff0000>
                 		<h2>There was an error creating your certificate.</h2></font><br>
 	                	<blockquote>

@@ -18,7 +18,7 @@ case 'list_users':
 
 	?>
 	</pre>
-	<form action=<?php echo $PHP_SELF?> method=post>
+	<form action="<?php echo $PHP_SELF?>" method="post">
 	<input type=submit name=submit value="Back to Menu">
 	</form>
 	<?php
@@ -29,7 +29,7 @@ case 'add_user_form';
 	printHeader('admin');
 	?>
 	<body onLoad="self.focus();document.form.login.focus()">
-	<form action=<?php echo $PHP_SELF?> method=post name=form>
+	<form action="<?php echo $PHP_SELF?>" method="post" name="form">
 	<table>
 	<th colspan=2><h3>Add User or Change Password</h3></th>
 	<tr><td>User ID</td><td><input type=text name=login value="<?php echo htvar($login)?>" maxlength=15 size=15></td></tr>
@@ -49,7 +49,7 @@ case 'add_user':
 
 		?>
 		<p><center>
-		<form action=<?php echo $PHP_SELF?> method=post>
+		<form action="<?php echo $PHP_SELF?>" method="post">
 		<input type=hidden name=stage value=add_user_form>
 		<input type=hidden name=login value="<?php echo htvar($login)?>">
 		<input type=submit name=submit value=Back>
@@ -65,7 +65,7 @@ case 'add_user':
 		system("htpasswd -bm $pwdfile $login $passwd 2>&1")
 		?>
 		<p>
-		<form action=<?php echo $PHP_SELF?> method=post>
+		<form action="<?php echo $PHP_SELF?>" method="post">
 		<input type=submit name=submit value="Back to Menu">
 		</form>
 		<?php
@@ -76,8 +76,8 @@ case 'add_user':
 case 'del_user_form';
 	printHeader('admin');
 	?>
-	<body onLoad="self.focus();document.form.login.focus()">
-	<form action=<?php echo $PHP_SELF?> method=post name=form>
+	<body onLoad="self.focus();document.form.login.focus();">
+	<form action="<?php echo $PHP_SELF?>" method="post" name="form">
 	<table>
 	<th colspan=2><h3>Remove User</h3></th>
 	<tr><td>User ID</td><td><input type=text name=login value="<?php echo htvar($login)?>" maxlength=15 size=15></td></tr>
@@ -98,7 +98,7 @@ case 'del_user':
 	system("htpasswd -D $pwdfile $login 2>&1")
 	?>
 	<p>
-	<form action=<?php echo $PHP_SELF?> method=post>
+	<form action="<?php echo $PHP_SELF?>" method="post">
 	<input type=submit name=submit value="Back to Menu">
 	</form>
 	<?php

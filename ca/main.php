@@ -27,7 +27,7 @@ case 'gen_crl':
                 ?>
                 <center><h2>Certificate Revocation List Updated</h2></center>
                 <p>
-                <form action=<?php echo $PHP_SELF?> method=post>
+                <form action="<?php echo $PHP_SELF?>" method="post">
                 <input type=submit name=submit value="Back to Menu">
                 </form>
                 <?php
@@ -41,7 +41,7 @@ case 'gen_crl':
                 <h3>Debug Info:</h3>
                 <pre><?php echo $errtxt?></pre>
                 </blockquote>
-                <form action=<?php echo $PHP_SELF?> method=post>
+                <form action="<?php echo $PHP_SELF?>" method="post">
                 <p>
                 <input type=submit name=submit value="Back to Menu">
                 <p>
