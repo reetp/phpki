@@ -129,6 +129,7 @@ case 'revoke-form':
        	Locality<br>
        	State/Province<br>
        	Country<br>
+		</p>
        	</td>
 	<?php
 
@@ -145,7 +146,7 @@ case 'revoke-form':
        	</td>
        	</tr></table>
 	    <h4>Are you sure?</h4>
-       	<p><form action="'.$PHP_SELF.'?'.$qstr_sort.'&'.$qstr_filter.'" method=post>
+       	<form action="'.$PHP_SELF.'?'.$qstr_sort.'&'.$qstr_filter.'" method=post>
 	    <input type=hidden name=stage value=revoke >
 	    <input type=hidden name=serial value='.$serial.' >
        	<input type=submit name=submit value=Yes >&nbsp
