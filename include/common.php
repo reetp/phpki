@@ -7,7 +7,7 @@ if (isset($_SERVER['PHP_AUTH_USER']))
 else
 	$PHPki_user = md5('default');
 
-$PHP_SELF = $_SERVER['PHP_SELF'];
+$PHP_SELF = htmlspecialchars($_SERVER['PHP_SELF'], ENT_QUOTES, "utf-8");
 
 
 function printHeader($withmenu="default") {
