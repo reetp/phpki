@@ -256,7 +256,7 @@ case 'renew-form':
 	print "<option value=0.25 " . ($expiry == 1 ? "selected='selected'" : "") . " >3 Months</option>\n" ;
 	print "<option value=0.5 " . ($expiry == 1 ? "selected='selected'" : "") . " >6 Months</option>\n" ;
 	print "<option value=1 " . ($expiry == 1 ? "selected='selected'" : "") . " >1 Year</option>\n" ;
-	for ( $i = 2 ; $i <=5 ; $i++ ) {
+	for ( $i = 2 ; $i <= 5 ; $i++ ) {
 		print "<option value=$i " . ($expiry == $i ? "selected='selected'" : "") . " >$i Years</option>\n" ;
 	}
 
