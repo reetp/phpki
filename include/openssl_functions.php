@@ -567,7 +567,7 @@ function CA_create_cert($cert_type='email',$country,$province,$locality,$organiz
 	if ($ret == 0) {
 		unset($cmd_output);
 		$cmd_output[] = "Creating PKCS12 format certifcate.";
-		if (($_passwd) && ($_passwd != "''")) { {
+		if (($_passwd) && ($_passwd != "''")) {
 			$cmd_output[] = "infile: $usercert   keyfile: $userkey   outfile: $userpfx  pass: $_passwd";
 			exec(PKCS12." -export -in '$usercert' -inkey '$userkey' -certfile '$config[cacert_pem]' -caname '$config[organization]' -out '$userpfx' -name $friendly_name -rand '$config[random]' -passin pass:$_passwd -passout pass:$_passwd  2>&1", $cmd_output, $ret);
 		}
