@@ -775,8 +775,7 @@ E-mail: <a href=mailto:someone@somewhere.com>someone@somewhere.com</a>&nbsp;&nbs
 
 	<?php
         for ( $i = 5 ; $i < 20 ; $i+=5 ) {
-                print "<option value=$i " . ($expiry == $i ? "selected='selected
-'" : "") . " >$i Years</option>\n" ;
+            print "<option value=$i " . ($expiry == $i ? "selected='selected'" : "") . " >$i Years</option>\n" ;
         }
 	?>
 
@@ -792,7 +791,7 @@ E-mail: <a href=mailto:someone@somewhere.com>someone@somewhere.com</a>&nbsp;&nbs
 
 	<?php
         for ( $i = 512 ; $i <= 4096 ; $i+=512 ) {
-                print "<option value=$i " . ($keysize == $i ? "selected='selected'" : "") . ">$i bits</option>\n" ;
+            print "<option value=$i " . ($keysize == $i ? "selected='selected'" : "") . ">$i bits</option>\n" ;
         }
 	?>
 
