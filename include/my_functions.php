@@ -1,7 +1,6 @@
 <?php
 
-#$PHP_SELF = $_SERVER['PHP_SELF'];
-$PHP_SELF = htmlspecialchars($HTTP_SERVER_VARS['PHP_SELF'], ENT_QUOTES, "utf-8");
+$PHP_SELF = htmlspecialchars($_SERVER['PHP_SELF'], ENT_QUOTES, "utf-8");
 
 #
 # Returns TRUE if browser is Internet Explorer.
