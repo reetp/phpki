@@ -552,21 +552,21 @@ function CA_create_cert($cert_type='email',$country,$province,$locality,$organiz
 	# Sign the certificate request and create the certificate
 	if ($ret == 0) {
 		unset($cmd_output);
-		$cmd_output[] = "Signing $cert_type certifcate request.";
+		$cmd_output[] = "Signing $cert_type certificate request.";
 		exec(CA." -config '$cnf_file' -in '$userreq' -out /dev/null -notext -days '$expiry_days' -passin pass:'$config[ca_pwd]' -batch -extensions $extensions 2>&1", $cmd_output, $ret);
 	};
 
 	# Create DER format certificate
 	if ($ret == 0) {
 		unset($cmd_output);
-		$cmd_output[] = "Creating DER format certifcate.";
+		$cmd_output[] = "Creating DER format certificate.";
 		exec(X509." -in '$usercert' -out '$userder' -inform PEM -outform DER 2>&1", $cmd_output, $ret);
 	};
 
 	# Create a PKCS12 certificate file for download to Windows
 	if ($ret == 0) {
 		unset($cmd_output);
-		$cmd_output[] = "Creating PKCS12 format certifcate.";
+		$cmd_output[] = "Creating PKCS12 format certificate.";
 		if (($_passwd) && ($_passwd != "''")) {
 			$cmd_output[] = "infile: $usercert   keyfile: $userkey   outfile: $userpfx  pass: $_passwd";
 			exec(PKCS12." -export -in '$usercert' -inkey '$userkey' -certfile '$config[cacert_pem]' -caname '$config[organization]' -out '$userpfx' -name $friendly_name -rand '$config[random]' -passin pass:$_passwd -passout pass:$_passwd  2>&1", $cmd_output, $ret);
