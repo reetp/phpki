@@ -54,7 +54,7 @@ case 'display':
 	<?php
 
 	if ($revoke_date = CAdb_is_revoked($serial))
-		print '<center><font color=red><h2>REVOKED '.$revoke_date.'</h2></font></center>';
+		print '<center><font color=blue><h2>REVOKED '.$revoke_date.'</h2></font></center>';
 
        	print '<pre>'.CA_cert_text($serial).'</pre>';
 	break;
@@ -316,8 +316,8 @@ default:
 	?>
 	<body onLoad="self.focus();document.filter.search.focus();">
 	<table>
-	<tr><th colspan=8><big>CERTIFICATE MANAGEMENT CONTROL PANEL</big></th></tr>
-	<tr><td colspan=8><center>
+	<tr><th colspan=9><big>CERTIFICATE MANAGEMENT CONTROL PANEL</big></th></tr>
+	<tr><td colspan=9><center>
 	<form action="<?php echo "$PHP_SELF?$qstr_sort"?>" method=get name=filter>
         Search: <input type=text name=search value="<?php echo htvar($search)?>" style="font-size: 11px;" maxlength=60 size=30>
         &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<input type=checkbox name=show_valid value="V" <?php echo ($show_valid?'checked':'')?>>Valid
@@ -361,6 +361,7 @@ default:
 
 		print '</th>';
 	}
+	print '<th><font color=green>Actions</font></th>';
 	print '</tr>';
 
 	$x = "^[$show_valid$show_revoked$show_expired]";
