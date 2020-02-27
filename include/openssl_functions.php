@@ -750,9 +750,9 @@ function CA_renew_cert($old_serial,$expiry,$passwd) {
 		}
 		else {
 			$cmd_output[] = "infile: $usercert   keyfile: $userkey   outfile: $userpfx";
-			exec(PKCS12." -export -in '$usercert' -inkey '$userkey' -certfile '$config[cacert_pem]' -caname '$config[organization]' -out '$userpfx' -name $friendly_name  -passout pass: 2>&1", $cmd_output, $ret);
-# reetp
-#			exec(PKCS12." -export -in '$usercert' -inkey '$userkey' -certfile '$config[cacert_pem]' -caname '$config[organization]' -out '$userpfx' -name $friendly_name  -nodes 2>&1", $cmd_output, $ret);
+            # reetp - this needs looking at
+			#exec(PKCS12." -export -in '$usercert' -inkey '$userkey' -certfile '$config[cacert_pem]' -caname '$config[organization]' -out '$userpfx' -name $friendly_name  -passout pass: 2>&1", $cmd_output, $ret);
+			exec(PKCS12." -export -in '$usercert' -inkey '$userkey' -certfile '$config[cacert_pem]' -caname '$config[organization]' -out '$userpfx' -name $friendly_name  -nodes 2>&1", $cmd_output, $ret);
 
 		}
 	};
@@ -760,6 +760,14 @@ function CA_renew_cert($old_serial,$expiry,$passwd) {
 	#Unlock the CA database
 	fclose($fd);
 
+	# https://github.com/radicand/phpki/issues/14
+	if (ereg('E-mail Protection', $certtext) && ereg('Code Signing', $certtest)) {
+        $cert_type = 'email_signing';
+    }
+    if (ereg('E-mail Protection', $certtext)) {
+        $cert_type = 'email';
+    }
+	
 	#Remove temporary openssl config file.
 	if (file_exists($cnf_file)) unlink($cnf_file);
 
