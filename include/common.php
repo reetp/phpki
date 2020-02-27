@@ -61,19 +61,19 @@ function printHeader($withmenu="default") {
 	<?php
 
 	if (isKonq()) { 
-		$logoclass  = '"logo-konq"';
-		$titleclass = '"title-konq"';
-		$menuclass  = '"headermenu-konq"';
+		$logoclass  = 'logo-konq';
+		$titleclass = 'title-konq';
+		$menuclass  = 'headermenu-konq';
 	}
 	else {
-		$logoclass  = '"logo-ie"';
-		$titleclass = '"title-ie"';
-		$menuclass  = '"headermenu-ie"';
+		$logoclass  = 'logo-ie';
+		$titleclass = 'title-ie';
+		$menuclass  = 'headermenu-ie';
 	}
 
 	?>
-	<div class=<?php echo $logoclass?>>PHPki</div>
-	<div class=<?php echo $titleclass?>><?php echo $title?></div>
+	<div class="<?php echo $logoclass?>">PHPki</div>
+	<div class="<?php echo $titleclass?>"><?php echo $title?></div>
 	<?php
 
 	switch ($withmenu) {
@@ -82,10 +82,10 @@ function printHeader($withmenu="default") {
 		break;
 	case 'setup':
 		?>
-		<div class=<?php echo $menuclass?>>
-		<a class=<?php echo $menuclass?> href="readme.php">ReadMe</a>
-		<a class=<?php echo $menuclass?> href="setup.php">Setup</a>
-		<a class=<?php echo $menuclass?> href="about.php" target="_about">About</a>
+		<div class="<?php echo $menuclass?>">
+		<a class="<?php echo $menuclass?>" href="readme.php">ReadMe</a>
+		<a class="<?php echo $menuclass?>" href="setup.php">Setup</a>
+		<a class="<?php echo $menuclass?>" href="about.php" target="_about">About</a>
 		</div>
 		<?php
 		break;
@@ -104,8 +104,8 @@ function printHeader($withmenu="default") {
 			print '<a class='.$menuclass.' style="color: red;" href="policy.html" target="help">Policy</a>';
 		}
 		?>
-		<a class=<?php echo $menuclass?> href="help.php" target="_help">Help</a>
-		<a class=<?php echo $menuclass?> href="about.php" target="_about">About</a>
+		<a class="<?php echo $menuclass?>" href="help.php" target="_help">Help</a>
+		<a class="<?php echo $menuclass?>" href="about.php" target="_about">About</a>
 		</div>
 		<?php
 		break;
@@ -125,8 +125,8 @@ function printHeader($withmenu="default") {
 			print '<a class='.$menuclass.' style="color: red;" href="../policy.html" target="help">Policy</a>';
 		}
 		?>
-		<a class=<?php echo $menuclass?> href="../help.php" target="_help">Help</a>
-		<a class=<?php echo $menuclass?> href="../about.php" target="_about">About</a>
+		<a class="<?php echo $menuclass?>" href="../help.php" target="_help">Help</a>
+		<a class="<?php echo $menuclass?>" href="../about.php" target="_about">About</a>
 		</div>
 		<?php
 	}
