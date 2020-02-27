@@ -332,19 +332,19 @@ EOS;
 	$config_txt1 = <<< EOS
 HOME			= $config[home_dir]
 RANDFILE		= $config[random]
-dir			= $config[ca_dir]
+dir				= $config[ca_dir]
 certs			= $config[cert_dir]
 crl_dir			= $config[crl_dir]
 database		= $config[index]
-new_certs_dir		= $config[new_certs_dir]
+new_certs_dir	= $config[new_certs_dir]
 private_dir		= $config[private_dir]
 serial			= $config[serial]
 certificate		= $config[cacert_pem]
-crl			= $config[cacrl_pem]
+crl				= $config[cacrl_pem]
 private_key		= $config[cakey]
-crl_extensions		= crl_ext
-default_days		= 365
-default_crl_days	= 30
+crl_extensions	= crl_ext
+default_days	= 365
+default_crl_days= 30
 preserve	 	= no
 default_md	 	= sha512
 
@@ -503,11 +503,11 @@ EOS;
 default_bits		= 2048
 default_keyfile		= privkey.pem
 distinguished_name	= req_name
-string_mask		= nombstr
+string_mask			= nombstr
 req_extensions		= req_ext
 
 [ req_name]
-countryName			= Country Name (2 letter code)
+countryName				= Country Name (2 letter code)
 countryName_default		= US
 countryName_min			= 2
 countryName_max			= 2
@@ -542,9 +542,9 @@ EOS;
 default_bits		= 2048
 default_keyfile		= privkey.pem
 distinguished_name	= req_name
-string_mask		= nombstr
+string_mask			= nombstr
 req_extensions		= req_ext
-prompt			= no
+prompt				= no
 
 [ req_name ]
 C		= $config[country]
@@ -625,6 +625,40 @@ EOS;
 	if (! unlink("$store_dir/tmp/openssl.cnf")) print "Can't unlink $store_dir/tmp/openssl.cnf";
 
 	#
+	# Create dhparam files for OpenVPN and others.
+	#
+	print '<p><strong>Creating 1024 bit Diffie-Hellman parameters used by OpenVPN.<br>';
+	print "Saving to $store_dir/dhparam1024.pem.</strong><br>";
+	$cmd = "openssl dhparam -rand '$config[random]' -out '$config[private_dir]/dhparam1024.pem' 1024";
+	print $cmd.'<br>';
+	flush();
+	flush_exec($cmd,100);
+
+	#
+    # Create a TLS auth key for OpenVPN.
+    #
+    if (function_exists('openvpn')) {
+	
+	print '<p><strong>Creating a TLS authentication key used by OpenVPN.<br>';
+    print "Saving to $store_dir/takey.pem.</strong><br>";
+	$cmd = "openvpn --genkey --secret '$config[private_dir]/takey.pem'";
+	print $cmd.'<br>';
+        flush();
+        flush_exec($cmd);
+	} else {
+		echo "openvpn is required to generate a takey.pem<br>";
+		echo "You can create one later like this:<br>";
+		echo "openvpn --genkey --secret". $config[private_dir] . "/takey.pem<br>";
+	}
+
+	#print '<p><strong>Creating 2048 bit Diffie-Hellman parameters used by OpenVPN.<br>';
+	#print "Saving to $store_dir/dhparam2048.pem.</strong><br>";
+	#$cmd = "openssl dhparam -rand '$config[random]' -out '$config[private_dir]/dhparam2048.pem' 2048";
+	#print $cmd.'<br>';
+	#flush();
+	#flush_exec($cmd,200);
+	
+	#
 	# Step aside and let the users in (create index.php files).  
 	#
 	if (! unlink('index.php')) print "Can't unlink index.php";
@@ -636,7 +670,11 @@ EOS;
 	?>
 	<center>
 	<h2>Setup is complete. Your CA root certificate as been created.</h2>
-	<h3><font color=red>SECURITY WARNING!&nbsp;&nbsp; Be sure to run the <cite>secure.sh</cite> shell script as the <strong>root</strong> user.</font></h3>
+	<?php
+	if (! getOSInformation()) {
+	print '<h3><font color=red>SECURITY WARNING!&nbsp;&nbsp; Be sure to run the <cite>secure.sh</cite> shell script as the <strong>root</strong> user.</font></h3>';
+	}
+	?>
 	<p><br><br>
 	<form action=index.php>
 	<input type=submit name=submit value="Proceed To The PHPki Main Menu">
