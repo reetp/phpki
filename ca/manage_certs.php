@@ -345,10 +345,10 @@ default:
 
 	print '<tr>';
 	$headings = array(
-		status=>"Status", issued=>"Issued", expires=>"Expires",
-		common_name=>"User's Name", email=>"E-mail", 
-		organization=>"Organization", unit=>"Department", 
-		locality=>"Locality"
+	    'status'=>"Status", 'issued'=>"Issued", 'expires'=>"Expires",
+		'common_name'=>"User's Name", 'email'=>"E-mail", 
+		'organization'=>"Organization", 'unit'=>"Department", 
+		'locality'=>"Locality"
 	);
 
 	foreach($headings as $field=>$head) {
@@ -375,7 +375,7 @@ default:
 
 	$db = csort(CAdb_to_array($x), $sortfield, ($ascdec=='A'?SORT_ASC:SORT_DESC));
 
-	$stcolor = array(Valid=>'green',Revoked=>'red',Expired=>'orange');
+	$stcolor = array('Valid'=>'green','Revoked'=>'red','Expired'=>'orange');
 
 	foreach($db as $rec) {
 		print	'<tr style="font-size: 11px;">
