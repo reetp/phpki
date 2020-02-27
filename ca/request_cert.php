@@ -90,7 +90,7 @@ case 'validate':
 	if ( $er )
 		$er = '<h2>ERROR(S) IN FORM:</h2><h4><blockquote>' . $er . '</blockquote></h4>';
 
-	if ($email && ($serial = CAdb_in($email,$common_name))) { 	
+	if ($email && ($serial = CAdb_in($email,$common_name))) {
 		$er = '';
 		$certtext = CA_cert_text($serial);
 		$er .= '<h2>A valid certificate already exists for ' . htvar("$common_name  <$email>") . '</h2>';
@@ -98,7 +98,7 @@ case 'validate':
 
 	}
 
-	if ($er)  { 
+	if ($er)  {
 		printHeader();
 		?>
 
@@ -106,7 +106,7 @@ case 'validate':
 		<input type=submit name=submit value='Go Back'>
 		<font color=#ff0000><?php echo $er?></font>
 		<br><input type=submit name=submit value='Go Back'>
-		
+
 		<?php
 		print $hidden_fields;
 		print "</form>";
@@ -139,37 +139,45 @@ case 'confirm':
 	print 'IP Addresses<br>';
 	}
 	?>
-    	</td>
+		</p>
+		</td>
 
     	<td>
     	<?php
 	print htvar($common_name) . '<br>';
-    	print htvar($email) . '<br>';
-    	print htvar($organization) . '<br>';
-    	print htvar($unit) . '<br>';
-    	print htvar($locality) . '<br>';
-    	print htvar($province) . '<br>';
-    	print htvar($country) . '<br>';
+   	print htvar($email) . '<br>';
+   	print htvar($organization) . '<br>';
+   	print htvar($unit) . '<br>';
+   	print htvar($locality) . '<br>';
+   	print htvar($province) . '<br>';
+   	print htvar($country) . '<br>';
 	print htvar($expiry). ' Year'.($expiry == 1 ? '' : 's').'<br>';
 	print htvar($keysize). ' bits<br>';
 
 	switch  ($cert_type) {
-	    case 'email': print 'E-mail, SSL Client' . '<br>';
-		break;
-	    case 'email_signing': print 'E-mail, SSL Client, Code Signing' . '<br>';
-		break;
-	    case 'server': 
-		print 'SSL Server' . '<br>';
-		print htvar($dns_names). '<br>';
-		print htvar($ip_addr). '<br>';
-		break;
-	    case 'vpn_client': print 'VPN Client Only' . '<br>';
-		break;
-	    case 'vpn_server': print 'VPN Server Only' . '<br>';
-		break;
-	    case 'vpn_client_server': print 'VPN Client, VPN Server' . '<br>';
-		break;
-	    case 'time_stamping': print 'Time Stamping' . '<br>';
+	    case 'email':
+		    print 'E-mail, SSL Client' . '<br>';
+		    break;
+	    case 'email_signing':
+		    print 'E-mail, SSL Client, Code Signing' . '<br>';
+		    break;
+	    case 'server':
+		    print 'SSL Server' . '<br>';
+		    print htvar($dns_names). '<br>';
+		    print htvar($ip_addr). '<br>';
+		    break;
+	    case 'vpn_client':
+		    print 'VPN Client Only' . '<br>';
+		    break;
+	    case 'vpn_server':
+		    print 'VPN Server Only' . '<br>';
+		    break;
+	    case 'vpn_client_server':
+		    print 'VPN Client, VPN Server' . '<br>';
+		    break;
+	    case 'time_stamping':
+		    print 'Time Stamping' . '<br>';
+
 	}
 	?>
     	</td>
@@ -187,7 +195,7 @@ case 'confirm':
 	<?php
 	printFooter();
 
-	# Save user's defaults 
+	# Save user's defaults
 	$fp = fopen($user_cnf,'w');
 	$x = '<?php
 	$country = \''.addslashes($country).'\';
@@ -206,7 +214,7 @@ case 'confirm':
 case 'final':
 	if ($submit == "Yes!  Create and Download") {
 		if (! $serial = CAdb_in($email,$common_name)) {
-			list($ret,$errtxt) = CA_create_cert($cert_type,$country, $province, $locality, $organization, $unit, $common_name, $email, $expiry, $passwd, $keysize,$dns_names,$ip_addr);
+			list($ret,$errtxt) = CA_create_cert($cert_type, $country, $province, $locality, $organization, $unit, $common_name, $email, $expiry, $passwd, $keysize, $dns_names, $ip_addr);
 
 			if (! $ret) {
 	                	printHeader();
@@ -238,7 +246,8 @@ case 'final':
 
                 switch($cert_type) {
                 case 'server':
-                        upload(array("$config[private_dir]/$serial-key.pem","$config[new_certs_dir]/$serial.pem",$config['cacert_pem']), "$common_name ($email).pem",'application/pkix-cert');
+#                        upload(array("$config[private_dir]/$serial-key.pem","$config[new_certs_dir]/$serial.pem",$config['cacert_pem']), "$common_name ($email).pem",'application/pkix-cert');
+                        upload(array("$config[private_dir]/$serial-key.pem","$config[new_certs_dir]/$serial.pem",$config['cacert_pem']), "$rec[common_name]-Bundle.pem",'application/pkix-cert');
                         break;
                 case 'email':
                 case 'email_signing':
@@ -246,14 +255,15 @@ case 'final':
                 case 'vpn_client_server':
                 case 'vpn_client':
                 case 'vpn_server':
-                        upload("$config[pfx_dir]/$serial.pfx", "$common_name ($email).p12", 'application/x-pkcs12');
+#                        upload("$config[pfx_dir]/$serial.pfx", "$common_name ($email).p12", 'application/x-pkcs12');
+						upload("$config[pfx_dir]/$serial.pfx", "$rec[common_name].p12", 'application/x-pkcs12');
                         break;
                 }
 
 		break;
 	}
 default:
-	# 
+	#
 	# Default fields to reasonable values if necessary.
 	#
 	if (! $submit and file_exists($user_cnf)) include($user_cnf);
@@ -346,7 +356,7 @@ default:
 
 	<tr>
 	<td>Certificate Use:<font color=red size=3>*</font> </td>
-	<td><select name=cert_type onchange="if (this.value=='server') 
+	<td><select name=cert_type onchange="if (this.value=='server')
         {setVisibility('testrow1',true);setVisibility('testrow2',true);} else {setVisibility('testrow1',false);setVisibility('testrow2',false);}">
 	<?php
 	print '<option value="email" '.($cert_type=='email'?'selected':'').'>E-mail, SSL Client</option>';
