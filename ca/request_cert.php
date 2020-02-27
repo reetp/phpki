@@ -233,6 +233,8 @@ case 'final':
 				$serial = $errtxt;
         		}
 		}
+		# Clear common_name fields
+		$common_name = '';
 
                 switch($cert_type) {
                 case 'server':
