@@ -32,7 +32,8 @@ function CA_create_cnf($country='',$province='',$locality='',$organization='',$u
 			if (! $value == '') {
 				$count_dns  = $count_dns + 1;
 				$count_ip   = $count_ip + 1;
-				$alt_names .= "DNS.$count_dns = ".trim($value)."\n";
+				# reetp IP should not be added to a DNS entry
+				#$alt_names .= "DNS.$count_dns = ".trim($value)."\n";
 				$alt_names .= "IP.$count_ip = ".trim($value)."\n";
 			}
 		}
@@ -47,7 +48,7 @@ function CA_create_cnf($country='',$province='',$locality='',$organization='',$u
 	$cnf_contents = "
 HOME             = $config[home_dir] 
 RANDFILE         = $config[random]
-dir	         = $config[ca_dir]
+dir	             = $config[ca_dir]
 certs            = $config[cert_dir]
 crl_dir	         = $config[crl_dir]
 database         = $config[index]
@@ -232,7 +233,7 @@ $alt_names
 
 
 	# Write out the config file.
-	$cnf_file  = tempnam('./tmp','cnf-');  // Why is this not in the phpki dir ? why ../../ ?
+	$cnf_file  = tempnam('../../tmp','cnf-');  // Why is this not in the phpki dir ? why ../../ ?
 	$handle = fopen($cnf_file,"w");
 	fwrite($handle, $cnf_contents);
 	fclose($handle);
@@ -592,7 +593,7 @@ function CA_create_cert($cert_type='email',$country,$province,$locality,$organiz
 		exec(REQ." -new -newkey rsa:$keysize -keyout '$userkey' -out '$userreq' -config '$cnf_file' -days '$expiry_days' -passout pass:$_passwd  2>&1", $cmd_output, $ret);
 	}
 	else {
-		exec(REQ." -new -nodes -newkey rsa:$keysize -keyout '$userkey' -out '$userreq' -config '$cnf_file' -days '$expiry_days' 2>&1", $cmd_output, $ret);
+		exec(REQ." -new -newkey rsa:$keysize -keyout '$userkey' -out '$userreq' -config '$cnf_file' -days '$expiry_days' -nodes  2>&1", $cmd_output, $ret);
 	}
 	
 	# Sign the certificate request and create the certificate
@@ -749,8 +750,10 @@ function CA_renew_cert($old_serial,$expiry,$passwd) {
 		}
 		else {
 			$cmd_output[] = "infile: $usercert   keyfile: $userkey   outfile: $userpfx";
-			#exec(PKCS12." -export -in '$usercert' -inkey '$userkey' -certfile '$config[cacert_pem]' -caname '$config[organization]' -out '$userpfx' -name $friendly_name  -passout pass: 2>&1", $cmd_output, $ret);
-			exec(PKCS12." -export -in '$usercert' -inkey '$userkey' -certfile '$config[cacert_pem]' -caname '$config[organization]' -out '$userpfx' -name $friendly_name  -nodes 2>&1", $cmd_output, $ret);
+			exec(PKCS12." -export -in '$usercert' -inkey '$userkey' -certfile '$config[cacert_pem]' -caname '$config[organization]' -out '$userpfx' -name $friendly_name  -passout pass: 2>&1", $cmd_output, $ret);
+# reetp
+#			exec(PKCS12." -export -in '$usercert' -inkey '$userkey' -certfile '$config[cacert_pem]' -caname '$config[organization]' -out '$userpfx' -name $friendly_name  -nodes 2>&1", $cmd_output, $ret);
+
 		}
 	};
 	
