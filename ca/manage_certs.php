@@ -54,7 +54,7 @@ case 'display':
 	<?php
 
 	if ($revoke_date = CAdb_is_revoked($serial))
-		print '<center><font color=blue><h2>REVOKED '.$revoke_date.'</h2></font></center>';
+		print '<center><font color=red><h2>REVOKED '.$revoke_date.'</h2></font></center>';
 
        	print '<pre>'.CA_cert_text($serial).'</pre>';
 	break;
@@ -129,7 +129,7 @@ case 'revoke-form':
        	Locality<br>
        	State/Province<br>
        	Country<br>
-		</p>
+	</p>
        	</td>
 	<?php
 
@@ -145,12 +145,12 @@ case 'revoke-form':
        	'.htvar($rec[country]).'<br>
        	</td>
        	</tr></table>
-	    <h4>Are you sure?</h4>
+	<h4>Are you sure?</h4>
        	<form action="'.$PHP_SELF.'?'.$qstr_sort.'&'.$qstr_filter.'" method=post>
 	    <input type=hidden name=stage value=revoke >
 	    <input type=hidden name=serial value='.$serial.' >
-       	<input type=submit name=submit value=Yes >&nbsp
-       	<input type=submit name=submit value=Cancel>
+       	    <input type=submit name=submit value=Yes >&nbsp
+       	    <input type=submit name=submit value=Cancel>
        	</form>';
 	
 	break;
@@ -265,7 +265,7 @@ case 'renew-form':
 	</select></td>
 	</tr>
 	<tr>
-		<td>&nbsp</td>
+	<td>&nbsp</td>
 	<td>
 	    <input type=submit name=submit value="Submit Request">&nbsp
 	    <input type=submit name=submit value="Back">
