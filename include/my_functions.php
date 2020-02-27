@@ -30,7 +30,7 @@ function upload($source, $destination, $content_type="application/octet-stream")
 #	header("Cache-Control: no-store, no-cache, must-revalidate");
 #	header("Cache-Control: post-check=0, pre-check=0", false);
 #	header("Pragma: no-cache");
-    header("Content-Type: $content_type");
+        header("Content-Type: $content_type");
 
 	if (is_array($source)) {
 		$fsize = 0;
@@ -238,4 +238,15 @@ function my_file_get_contents($f) {
 	return implode('', file($f));
 }
 
+function getOSInformation() {
+    if (false == function_exists("shell_exec")) {
+        return null;
+    }
+    $os = shell_exec('cat /etc/redhat-release');
+    if (preg_match('/^SME Server/', $os)) {
+        return true;
+    } else {
+        return null;
+    }
+}
 ?>
