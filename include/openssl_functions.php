@@ -232,7 +232,7 @@ $alt_names
 
 
 	# Write out the config file.
-	$cnf_file  = tempnam('./tmp','cnf-');
+	$cnf_file  = tempnam('./tmp','cnf-');  // Why is this not in the phpki dir ? why ../../ ?
 	$handle = fopen($cnf_file,"w");
 	fwrite($handle, $cnf_contents);
 	fclose($handle);
@@ -367,15 +367,43 @@ function CAdb_explode_entry($dbentry) {
 	if (time() > strtotime("$mm-$dd-$yy"))
 		$db['status'] = "Expired";
 
-	$db['serial']       = $a[3];
-	$db['country']      = $b[1];
-	$db['province']     = $b[2];
-	$db['locality']     = $b[3];
-	$db['organization'] = $b[4];
-	$db['issuer']       = $b[5];
-	$db['unit']         = $b[6];
-	$db['common_name']  = $b[7];
-	$db['email']        = $b[8];
+
+	// Compatibility with migrated certs from openvpn-bridge
+	if(count($b) == 7){
+                $db['serial']       = $a[3];
+                $db['country']      = $b[1];
+                $db['province']     = $b[2];
+                $db['locality']     = '';
+                $db['organization'] = $b[3];
+                $db['issuer']       = '';
+                $db['unit']         = $b[4];
+                $db['common_name']  = $b[5];
+                $db['email']        = $b[6];
+        }
+	// Compatibility with renewed certs from openvpn-bridge
+        elseif(count($b) == 8){
+                $db['serial']       = $a[3];
+                $db['country']      = $b[1];
+                $db['province']     = $b[2];
+                $db['locality']     = $b[3];
+                $db['organization'] = $b[4];
+                $db['issuer']       = '';
+                $db['unit']         = $b[5];
+                $db['common_name']  = $b[6];
+                $db['email']        = $b[7];
+        }
+	// Else, it's a certificate created with phpki
+        else{
+		$db['serial']       = $a[3];
+		$db['country']      = $b[1];
+		$db['province']     = $b[2];
+		$db['locality']     = $b[3];
+		$db['organization'] = $b[4];
+		$db['issuer']       = $b[5];
+		$db['unit']         = $b[6];
+		$db['common_name']  = $b[7];
+		$db['email']        = $b[8];
+	}
 
 	return $db;
 }
@@ -429,6 +457,24 @@ function CA_crl_text() {
 	global $config;
 	$crlfile = $config['cacrl_pem'];
 	return(shell_exec(CRL.' -in '.escshellarg($crlfile).' -text 2>&1'));
+}
+
+// Returns the static takey.pem file
+function ta_key_text() {
+        global $config;
+        return(shell_exec('cat '.escshellarg($config['private_dir']).'/takey.pem 2>&1'));
+}
+
+// Returns the dhparam file
+function dhparam_text() {
+        global $config;
+        return(shell_exec('cat '.escshellarg($config['private_dir']).'/dhparam1024.pem 2>&1'));
+}
+
+// Returns the root CA certificate file (PEM Encoded)
+function root_pem_text() {
+        global $config;
+        return(shell_exec('cat '.escshellarg($config['cacert_pem']).' 2>&1'));
 }
 
 //

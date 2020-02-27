@@ -32,6 +32,10 @@ case 'dl_crl':
 	upload("$config[cacrl_der]", "$config[ca_prefix]cacrl.crl", 'application/pkix-crl');
 	break;
 
+case 'dl_crl_pem':
+       upload("$config[cacrl_pem]", "$config[ca_prefix]cacrl.crl", 'application/octet-stream');
+       break;
+
 default:
 	printHeader('public');
 
@@ -55,12 +59,14 @@ default:
 	<a href=<?php echo $PHP_SELF?>?stage=display_root>Display Our Root Certificate (PEM Encoded)</a></td>
 	<td>This option provides the "Root" certificate PEM encoded text for advanced users 
 	to manually install via copy and paste. <a href=help.php target=_help>Read the online help</a> 
-	to learn more about this.</td></tr>
-	
+	to learn more about this.</td>
+
 	<tr><td style="text-align: center; vertical-align: middle; font-weight: bold;">
+	
 	<a href=<?php echo $PHP_SELF?>?stage=dl_crl>Download Our Certificate Revocation List</a></td>
 	<td>The official list of certificates revoked by this site.  Installation and use of 
-	this list is optional. Some e-mail programs will reference this list automagically. </td></tr>
+	this list is optional. Some e-mail programs will reference this list automagically.
+	(<a href="<?php echo $PHP_SELF?>?stage=dl_crl_pem">Some will need it in PEM format.</a>)</td></tr>
 	
 	</table>
 	</center>
