@@ -15,7 +15,7 @@ body {
 	padding: 0;
 	background: #fafaff; 
 	font-family: Arial, Veranda, Helvetica, sans-serif;
-	font-size: 12px; 
+	font-size: 14px; 
 }
 
 img {
@@ -116,15 +116,15 @@ td {
 }
 
 .headermenu-ie {
-	text-align: right;
+	text-align: center;
 	margin-right: 0.1in;
-        margin-top: -0.20in;
+  margin-top: 0.20in;
 }
 
 .headermenu-konq {
-	text-align: right;
+	text-align: center;
 	margin-right: 0.1in;
-        margin-top: -0.25in;
+  margin-top: 0.25in;
 }
 
 
