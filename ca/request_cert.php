@@ -188,7 +188,8 @@ case 'confirm':
 	<p><form action='<?php echo $PHP_SELF?>' method=post>
 	<?php echo  $hidden_fields ?>
 	<input type=hidden name=form_stage value=final>
-  	<input type=submit name=submit value='Yes!  Create and Download' >&nbsp;
+  	<input type=submit name=submit value='Yes.  Create and Download' >&nbsp;
+	<input type=submit name=submit value='Yes.  Just Create' >&nbsp;
   	<input type=submit name=submit value='Go Back'>
 	</form>
 
@@ -212,13 +213,12 @@ case 'confirm':
 	break;
 
 case 'final':
-	if ($submit == "Yes!  Create and Download") {
+	if ($submit == "Yes  Create and Download" || $submit == "Yes.  Just Create") {
 		if (! $serial = CAdb_in($email,$common_name)) {
 			list($ret,$errtxt) = CA_create_cert($cert_type, $country, $province, $locality, $organization, $unit, $common_name, $email, $expiry, $passwd, $keysize, $dns_names, $ip_addr);
 
 			if (! $ret) {
 	                	printHeader();
-
 				?>
 				<form action="<?php echo $PHP_SELF?>" method="post">
 					<font color=#ff0000>
@@ -233,7 +233,6 @@ case 'final':
 					<p>
 				</form>
 				<?php
-
 				printFooter();
 				break;
         		}
@@ -241,29 +240,35 @@ case 'final':
 				$serial = $errtxt;
         		}
 		}
-
-                switch($cert_type) {
-                case 'server':
-#                        upload(array("$config[private_dir]/$serial-key.pem","$config[new_certs_dir]/$serial.pem",$config['cacert_pem']), "$common_name ($email).pem",'application/pkix-cert');
-                        upload(array("$config[private_dir]/$serial-key.pem","$config[new_certs_dir]/$serial.pem",$config['cacert_pem']), "$rec[common_name]-Bundle.pem",'application/pkix-cert');
-                        break;
-                case 'email':
-                case 'email_signing':
-		        case 'time_stamping':
-                case 'vpn_client_server':
-                case 'vpn_client':
-                case 'vpn_server':
-#                        upload("$config[pfx_dir]/$serial.pfx", "$common_name ($email).p12", 'application/x-pkcs12');
-						upload("$config[pfx_dir]/$serial.pfx", "$rec[common_name].p12", 'application/x-pkcs12');
-                        break;
-                }
-
-		break;
-
-	# Clear common_name fields
-	$common_name = '';
 	}
 	
+    if ($submit == "Yes  Create and Download") {
+		switch($cert_type) {
+		case 'server':
+#               upload(array("$config[private_dir]/$serial-key.pem","$config[new_certs_dir]/$serial.pem",$config['cacert_pem']), "$common_name ($email).pem",'application/pkix-cert');
+				upload(array("$config[private_dir]/$serial-key.pem","$config[new_certs_dir]/$serial.pem",$config['cacert_pem']), "$rec[common_name]-Bundle.pem",'application/pkix-cert');
+				break;
+		case 'email':
+		case 'email_signing':
+		case 'time_stamping':
+		case 'vpn_client_server':
+		case 'vpn_client':
+		case 'vpn_server':
+#               upload("$config[pfx_dir]/$serial.pfx", "$common_name ($email).p12", 'application/x-pkcs12');
+				upload("$config[pfx_dir]/$serial.pfx", "$rec[common_name].p12", 'application/x-pkcs12');
+				break;
+		}
+	    
+		# Clear common_name fields
+	    $common_name = '';
+		break;
+	}
+	
+# Clear common_name fields
+$common_name = '';
+
+// We could add 'return to index or create another certificate'
+
 default:
 	#
 	# Default fields to reasonable values if necessary.
@@ -284,6 +289,7 @@ default:
 
 	printHeader();
 	?>
+	
 	<body onLoad="self.focus();document.request.common_name.focus();document.request.cert_type.onchange();">
 	<form action="<?php echo $PHP_SELF?>" method=post name=request>
 	<table width=99%>
@@ -329,8 +335,8 @@ default:
 	<tr>
 	<td>Certificate Life<font color=red size=3>*</font> </td>
 	<td><select name=expiry>
-	<?php
 
+	<?php
 	print "<option value=0.083 " . ($expiry == 1 ? "selected='selected'" : "") . " >1 Month</option>\n" ;
 	print "<option value=0.25 " . ($expiry == 1 ? "selected='selected'" : "") . " >3 Months</option>\n" ;
 	print "<option value=0.5 " . ($expiry == 1 ? "selected='selected'" : "") . " >6 Months</option>\n" ;
@@ -351,8 +357,8 @@ default:
 	for ( $i = 512 ; $i <= 4096 ; $i+= 512 ) {
 		print "<option value=$i " . ($keysize == $i ? "selected='selected'" : "") . ">$i bits</option>\n" ;
 	}
-
 	?>
+
 	</select></td>
 	</tr>
 
@@ -379,9 +385,12 @@ default:
 	<tr id="testrow1" name="testrow1" style="visibility:hidden;display:none;">
 	<td>IP's<br>(only one per Line)</td><td><textarea name=ip_addr cols=30 rows=5><?php echo htvar($ip_addr) ?></textarea></td>
 	</tr>
-
+    <tr>
+		<td>&nbsp</td>
+		<td>&nbsp</td>
+	</tr>
 	<tr>
-	<td><center><input type=submit name=submit value='Submit Request'></center><input type=hidden name=form_stage value='validate'></td><td><font color=red size=3>* Fields are required</td>
+	<td><font color=red size=3>* Fields are required</td><td><input type=submit name=submit value='Submit Request'><input type=hidden name=form_stage value='validate'></td>
 	</tr>
 	</table>
 	</form>
