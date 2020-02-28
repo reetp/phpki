@@ -130,9 +130,9 @@ case 'confirm':
     	Locality<br>
     	State/Province<br>
     	Country<br>
-	Certificate Life<br>
-	Key Size<br>
-	Certificate Use<br>
+	    Certificate Life<br>
+	    Key Size<br>
+	    Certificate Use<br>
 	<?php
 	if  ($cert_type == 'server' ) {
 	print 'DNS Alt Names<br>';
@@ -221,16 +221,16 @@ case 'final':
 
 				?>
 				<form action="<?php echo $PHP_SELF?>" method="post">
-                		<font color=#ff0000>
-                		<h2>There was an error creating your certificate.</h2></font><br>
-	                	<blockquote>
-	                	<h3>Debug Info:</h3>
-				<pre><?php echo $errtxt?></pre>
-				</blockquote>
-				<p>
-				<?php echo $hidden_fields?>
-				<input type=submit name=submit value=Back>
-				<p>
+					<font color=#ff0000>
+					<h2>There was an error creating your certificate.</h2></font><br>
+					<blockquote>
+					<h3>Debug Info:</h3>
+					<pre><?php echo $errtxt?></pre>
+					</blockquote>
+					<p>
+					<?php echo $hidden_fields?>
+					<input type=submit name=submit value=Back>
+					<p>
 				</form>
 				<?php
 
@@ -241,8 +241,6 @@ case 'final':
 				$serial = $errtxt;
         		}
 		}
-		# Clear common_name fields
-		$common_name = '';
 
                 switch($cert_type) {
                 case 'server':
@@ -251,7 +249,7 @@ case 'final':
                         break;
                 case 'email':
                 case 'email_signing':
-		case 'time_stamping':
+		        case 'time_stamping':
                 case 'vpn_client_server':
                 case 'vpn_client':
                 case 'vpn_server':
@@ -261,7 +259,11 @@ case 'final':
                 }
 
 		break;
+
+	# Clear common_name fields
+	$common_name = '';
 	}
+	
 default:
 	#
 	# Default fields to reasonable values if necessary.
@@ -282,7 +284,7 @@ default:
 
 	printHeader();
 	?>
-	<body onLoad="self.focus();document.request.common_name.focus();document.request.cert_type.onchange()">
+	<body onLoad="self.focus();document.request.common_name.focus();document.request.cert_type.onchange();">
 	<form action="<?php echo $PHP_SELF?>" method=post name=request>
 	<table width=99%>
 	<th colspan=2><h3>Certificate Request Form</h3></th>
