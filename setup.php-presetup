@@ -632,7 +632,8 @@ EOS;
 	
 	flush();
 	flush_exec($cmd,100);
-
+    print "Please ignore warnings about \"unable to write 'random state'\"<br>";
+	
 	#
     # Create a TLS auth key for OpenVPN if openvpn is installed
     #
