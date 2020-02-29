@@ -22,7 +22,7 @@ function flush_exec($command, $line_length=200) {
                 }
         }
         print $line."<br>\n";
-	flush;
+	flush();
 	return;
 }
 
@@ -86,12 +86,12 @@ $hidden_fields = '
     <input type=hidden name=base_url value="' . htvar($base_url) . '">
     <input type=hidden name=crl_distrib value="' . htvar($crl_distrib) . '">
     <input type=hidden name=revoke_url value="' . htvar($revoke_url) . '">
-    <input type=hidden name=policy_url value="' . htvar(policy_url) . '">
-    <input type=hidden name=comment_root value="' . htvar(comment_root) . '">
-    <input type=hidden name=comment_email value="' . htvar(comment_email) . '">
-    <input type=hidden name=comment_sign value="' . htvar(comment_sign) . '">
-    <input type=hidden name=comment_srv value="' . htvar(comment_srv) . '">
-    <input type=hidden name=comment_stamp value="' . htvar(comment_stamp) . '">
+    <input type=hidden name=policy_url value="' . htvar($policy_url) . '">
+    <input type=hidden name=comment_root value="' . htvar($comment_root) . '">
+    <input type=hidden name=comment_email value="' . htvar($comment_email) . '">
+    <input type=hidden name=comment_sign value="' . htvar($comment_sign) . '">
+    <input type=hidden name=comment_srv value="' . htvar($comment_srv) . '">
+    <input type=hidden name=comment_stamp value="' . htvar($comment_stamp) . '">
     <input type=hidden name=openssl_bin value="' . htvar($openssl_bin) . '">
     <input type=hidden name=getting_help value="' . htvar($getting_help) . '">
     <input type=hidden name=ca_prefix value="' . htvar($ca_prefix) . '">
@@ -104,7 +104,6 @@ switch ($stage) {
 case 'validate':
 	$er = '';
 
-
 	if (! $country)      $er .= 'Missing Country<br>';
 	if (! $province)     $er .= 'Missing State/Province<br>';
 	if (! $locality)     $er .= 'Missing Locality<br>';
@@ -116,8 +115,7 @@ case 'validate':
 	if (! $passwdv)      $er .= 'Missing Certificate Password Verification "Again"<br>';
 	if (! $header_title) $er .= 'Missing Header Title<br>';
 	if (! $passwd_file)  $er .= 'Missing User Password File Location';
-	if (! $store_dir)     $er .= 'Missing Storage Directory<br>';
-
+	if (! $store_dir)    $er .= 'Missing Storage Directory<br>';
 
 	if ( $passwd && strlen($passwd) < 8 )
 		$er .= 'Certificate password is too short.<br>';
@@ -631,17 +629,21 @@ EOS;
 	print "Saving to $store_dir/dhparam1024.pem.</strong><br>";
 	$cmd = "openssl dhparam -rand '$config[random]' -out '$config[private_dir]/dhparam1024.pem' 1024";
 	print $cmd.'<br>';
+	
 	flush();
 	flush_exec($cmd,100);
 
 	#
-    # Create a TLS auth key for OpenVPN.
+    # Create a TLS auth key for OpenVPN if openvpn is installed
     #
-    if (function_exists('openvpn')) {
+    $command = 'which openvpn';
+	$command = escapeshellcmd($command);
+	
+    if (system ($command) == '/usr/sbin/openvpn') {
 	
 	print '<p><strong>Creating a TLS authentication key used by OpenVPN.<br>';
     print "Saving to $store_dir/takey.pem.</strong><br>";
-	$cmd = "openvpn --genkey --secret '$config[private_dir]/takey.pem'";
+	$cmd = $command . " --genkey --secret '$config[private_dir]/takey.pem'";
 	print $cmd.'<br>';
         flush();
         flush_exec($cmd);
@@ -812,7 +814,7 @@ E-mail: <a href=mailto:someone@somewhere.com>someone@somewhere.com</a>&nbsp;&nbs
 	<td><select name=expiry>
 
 	<?php
-        for ( $i = 5 ; $i < 20 ; $i+=5 ) {
+        for ( $i = 5 ; $i <= 15 ; $i+=5 ) {
             print "<option value=$i " . ($expiry == $i ? "selected='selected'" : "") . " >$i Years</option>\n" ;
         }
 	?>
