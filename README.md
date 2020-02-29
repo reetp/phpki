@@ -1,3 +1,24 @@
+PHPKi
+=====
+
+A simple PHP/web based system for generating your own certificates
+------------------------------------------------------------------
+
+Here are the comments from the radicand repo and the original docs
+
+No one appears to be maintaining this and I find it very handy.
+
+I discovered some issues and there are some additional bits we have for OpenVPN (if installed) at Koozali SME server so I thought I'd incorporate them in as well.
+
+It tries to detect if it is installed on Koozali whcih needs a couple of small mods, and if openvpn is installed it wil create a takey.
+
+Note... YMMV....
+
+I'm sure it is primitive by todays standards but does what I need.
+
+I will try and maintain it for the foreseeable future.
+
+
 About this fork
 ===============
 
