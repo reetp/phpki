@@ -53,8 +53,9 @@ case 'display':
 	<center><font color=#0000AA><h3>(#<?php echo $serial?>)<br><?php echo htvar(CA_cert_cname($serial).' <'.CA_cert_email($serial).'>')?> </h3></font></center>
 	<?php
 
-	if ($revoke_date = CAdb_is_revoked($serial))
+	if ($revoke_date = CAdb_is_revoked($serial)) {
 		print '<center><font color=red><h2>REVOKED '.$revoke_date.'</h2></font></center>';
+	}
 
        	print '<pre>'.CA_cert_text($serial).'</pre>';
 	break;
