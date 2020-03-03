@@ -359,14 +359,18 @@ function CAdb_explode_entry($dbentry) {
 		break;
 	}
 
-	sscanf(CA_cert_startdate($a[3]),"%s %s %s %s", $mm,$dd,$tt,$yy);
+	// CA_cert_start/enddate
+	// A date will be returned in this format
+	// Feb 27 16:00:09 2020 GMT
+	sscanf(CA_cert_startdate($a[3]),"%s%s%s%s", $mm,$dd,$tt,$yy);
 	$db['issued'] = strftime("%Y-%b-%d", strtotime("$yy-$mm-$dd"));
 
-	sscanf(CA_cert_enddate($a[3]), "%s %s %s %s",$mm,$dd,$tt,$yy);
+	sscanf(CA_cert_enddate($a[3]), "%s%s%s%s",$mm,$dd,$tt,$yy);
 	$db['expires'] = strftime("%Y-%b-%d", strtotime("$yy-$mm-$dd"));
-
-	if (time() > strtotime("$mm-$dd-$yy"))
+	
+	if (time() > strtotime("$yy-$mm-$dd")) {
 		$db['status'] = "Expired";
+	}
 
 
 	// Compatibility with migrated certs from openvpn-bridge
@@ -420,8 +424,10 @@ function CAdb_is_revoked($serial) {
 
         if  ($x) {
 		list($j,$j,$revoke_date,$j,$j,$j) = explode("\t", $x);
+		// Revoke date = 'R' + start date and is in this format
+		// 200227162209Z
 		sscanf($revoke_date, "%2s%2s%2s",$yy,$mm,$dd);
-		return strftime("%b %d, %Y", strtotime("$mm/$dd/$yy"));
+		return strftime("%b %d, %Y", strtotime("$yy-$mm-$dd"));
 	}
 	else
 		return false;
@@ -659,7 +665,7 @@ function CA_create_cert($cert_type='email',$country,$province,$locality,$organiz
 function CA_renew_cert($old_serial,$expiry,$passwd) {
 	global $config;
 
-	# Don't renew a revoked certificate if a valid one exists for this
+	# Do not renew a revoked certificate if a valid one exists for this
 	# URL.  Find and renew the valid certificate instead.
 	if (CAdb_is_revoked($old_serial)) {
 		$ret = CAdb_in(CA_cert_email($old_serial),CA_cert_cname($old_serial));
@@ -761,12 +767,12 @@ function CA_renew_cert($old_serial,$expiry,$passwd) {
 	fclose($fd);
 
 	# https://github.com/radicand/phpki/issues/14
-	if (ereg('E-mail Protection', $certtext) && ereg('Code Signing', $certtest)) {
-        $cert_type = 'email_signing';
-    }
-    if (ereg('E-mail Protection', $certtext)) {
-        $cert_type = 'email';
-    }
+	if (preg_match('E-mail Protection', $certtext) && preg_match('Code Signing', $certtest)) {
+	$cert_type = 'email_signing';
+	}
+	if (preg_match('E-mail Protection', $certtext)) {
+	$cert_type = 'email';
+	}
 	
 	#Remove temporary openssl config file.
 	if (file_exists($cnf_file)) unlink($cnf_file);
