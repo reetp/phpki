@@ -117,6 +117,12 @@ case 'validate':
 	if (! $passwd_file)  $er .= 'Missing User Password File Location';
 	if (! $store_dir)    $er .= 'Missing Storage Directory<br>';
 
+	$countrycode = strtoupper($country);
+
+	if (! preg_match("/\b[A-Z][A-Z]\b/", $countrycode, $match) ) {
+	    $er .= 'Country Code must be ISO 3166 two letters <br>'; 
+	}
+	
 	if ( $passwd && strlen($passwd) < 8 )
 		$er .= 'Certificate password is too short.<br>';
 
@@ -286,7 +292,8 @@ define('PKCS12', "RANDFILE='\$config[random]' " . OPENSSL . ' pkcs12 ');
 define('CA', OPENSSL . ' ca ');
 define('REQ', OPENSSL . ' req ');
 define('CRL', OPENSSL . ' crl ');
-
+define('DH', OPENSSL . ' dhparam ');
+# define('DH', OPENSSL . ' dhparam ' . "RANDFILE='$config[random]' ");
 ?>
 EOS;
 
@@ -596,7 +603,7 @@ EOS;
 	#
 	print '<strong>Creating root certificate...</strong><br>';
 	flush();
-
+	// .rnd created here
 	exec(REQ . " -x509 -config $tmp_cnf -extensions root_ext -newkey rsa:$keysize -keyout $config[cakey] -out $config[cacert_pem] -passout pass:'$config[ca_pwd]' -days $days 2>&1");
 
 	# **** DISABLED *****
@@ -626,13 +633,17 @@ EOS;
 	# Create dhparam files for OpenVPN and others.
 	#
 	print '<p><strong>Creating 1024 bit Diffie-Hellman parameters used by OpenVPN.<br>';
-	print "Saving to $store_dir/dhparam1024.pem.</strong><br>";
-	$cmd = "openssl dhparam -rand '$config[random]' -out '$config[private_dir]/dhparam1024.pem' 1024";
-	print $cmd.'<br>';
+	print "Saving to $config[private_dir]/dhparam1024.pem.</strong><br>";
+//	$cmd = "openssl dhparam -rand '$config[random]' -out '$config[private_dir]/dhparam1024.pem' 1024";
+//	print $cmd.'<br>';
+    // This works but still the error
+	exec(DH . "-rand '$config[random]' -out '$config[private_dir]/dhparam1024.pem' 1024");
+	// exec(DH . " -out '$config[private_dir]/dhparam1024.pem' 1024");
 	
 	flush();
-	flush_exec($cmd,100);
-    print "Please ignore warnings about \"unable to write 'random state'\"<br>";
+	//flush_exec($cmd,100);
+	
+    print "Please ignore warnings about \"unable to write 'random state\' <br><br>";
 	
 	#
     # Create a TLS auth key for OpenVPN if openvpn is installed
@@ -794,7 +805,7 @@ E-mail: <a href=mailto:someone@somewhere.com>someone@somewhere.com</a>&nbsp;&nbs
 	</tr>
 
 	<tr>
-	<td><strong>Country</strong> <font color=red>*</font></td>
+	<td><strong>Country Code ISO 3166 - 2 Characters</strong> <font color=red>*</font></td>
 	<td><input type=text name=country value="<?php echo htvar($country)?>" maxlength=2 size=2></td>
 	</tr>
 
