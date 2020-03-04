@@ -655,7 +655,7 @@ EOS;
 	
 	print '<p><strong>Creating a TLS authentication key used by OpenVPN.<br>';
     print "Saving to $store_dir/takey.pem.</strong><br>";
-	$cmd = $command . " --genkey --secret '$config[private_dir]/takey.pem'";
+	$cmd = "openvpn --genkey --secret '$config[private_dir]/takey.pem'";
 	print $cmd.'<br>';
         flush();
         flush_exec($cmd);
