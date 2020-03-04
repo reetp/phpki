@@ -296,7 +296,7 @@ default:
 	<th colspan=2><h3>Certificate Request Form</h3></th>
 
 	<tr>
-	<td width=30%>Common Name<font color=red size=3>*</font><br>(i.e. User real name or computer hostname) </td>
+	<td width=30%>Common Name<font color=red size=3>*</font><br>(i.e. User real name or computer hostname - used as SubjectAltName)</td>
 	<td><input type=text name=common_name value="<?php echo  htvar($common_name)?>" size=50 maxlength=60></td>
 	</tr>
 
@@ -328,7 +328,7 @@ default:
 	</tr>
 
 	<tr>
-	<td>Certificate Password<font color=red size=3>*</font> </td>
+	<td>Certificate Password<font color=red size=3>*</font><br>(Mandatory for Email,SSL Client,Code signing)</td>
 	<td><input type=password name=passwd value="<?php echo  htvar($passwd) ?>" size=30>&nbsp;&nbsp; Again <input type=password name=passwdv  value="<?php echo  htvar($passwdv) ?>" size=30></td>
 	</tr>
 
