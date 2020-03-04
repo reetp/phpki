@@ -271,7 +271,7 @@ case 'renew-form':
 	    <input type=submit name=submit value="Submit Request">&nbsp
 	    <input type=submit name=submit value="Back">
 	    <input type=hidden name=stage value=renew>
-	    <input type=hidden name=serial value=<?php echo $serial?>>
+	    <input type=hidden name=serial value="<?php echo $serial ?>" >
 	</td>
 	</tr>
 	</table>
