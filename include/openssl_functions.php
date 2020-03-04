@@ -626,7 +626,7 @@ function CA_create_cert($cert_type='email',$country,$province,$locality,$organiz
 		}
 		else {
 			$cmd_output[] = "infile: $usercert   keyfile: $userkey   outfile: $userpfx";
-			// Need to check this password thing
+			// reetp - this needs looking at
 			exec(PKCS12." -export -in '$usercert' -inkey '$userkey' -certfile '$config[cacert_pem]' -caname '$config[organization]' -out '$userpfx' -name $friendly_name -nodes -passout pass: 2>&1", $cmd_output, $ret);
 			//exec(PKCS12." -export -in '$usercert' -inkey '$userkey' -certfile '$config[cacert_pem]' -caname '$config[organization]' -out '$userpfx' -name $friendly_name  -nodes 2>&1", $cmd_output, $ret);
 		}
@@ -758,9 +758,9 @@ function CA_renew_cert($old_serial,$expiry,$passwd) {
 		}
 		else {
 			$cmd_output[] = "infile: $usercert   keyfile: $userkey   outfile: $userpfx";
-            # reetp - this needs looking at
-			#exec(PKCS12." -export -in '$usercert' -inkey '$userkey' -certfile '$config[cacert_pem]' -caname '$config[organization]' -out '$userpfx' -name $friendly_name  -passout pass: 2>&1", $cmd_output, $ret);
-			exec(PKCS12." -export -in '$usercert' -inkey '$userkey' -certfile '$config[cacert_pem]' -caname '$config[organization]' -out '$userpfx' -name $friendly_name  -nodes 2>&1", $cmd_output, $ret);
+            // reetp - this needs looking at
+			exec(PKCS12." -export -in '$usercert' -inkey '$userkey' -certfile '$config[cacert_pem]' -caname '$config[organization]' -out '$userpfx' -name $friendly_name  -nodes -passout pass: 2>&1", $cmd_output, $ret);
+			//exec(PKCS12." -export -in '$usercert' -inkey '$userkey' -certfile '$config[cacert_pem]' -caname '$config[organization]' -out '$userpfx' -name $friendly_name  -nodes 2>&1", $cmd_output, $ret);
 
 		}
 	};
