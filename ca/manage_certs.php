@@ -209,10 +209,14 @@ case 'renew-form':
 
 	<form action="<?php echo $PHP_SELF.'?'.$qstr_sort.'&'.$qstr_filter?>" method=post name=form>
 	<table width=99%>
-	<th colspan=2><h3>Certificate Renewal Form</h3></th>
+	<th colspan="2"><h3>Certificate Renewal Form</h3></th>
 
 	<tr>
-	<td width=25%>Common Name </td>
+	<td colspan="2" style="text-align:center"><h4>This will Revoke the old Certificate and Create a new one<br>You can add a password if required</h4></td>
+	</tr>
+	
+	<tr>
+	<td width="25%">Common Name </td>
 	<td><input type=text name=common_name value="<?php echo  htvar($common_name)?>" size=50 maxlength=60 disabled></td>
 	</tr>
 
