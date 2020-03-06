@@ -351,7 +351,7 @@ crl_extensions	= crl_ext
 default_days	= 365
 default_crl_days= 30
 preserve	 	= no
-default_md	 	= sha512
+default_md	 	= sha256
 
 [ ca ]
 default_ca		= email_cert
@@ -644,6 +644,14 @@ EOS;
 	flush_exec($cmd,100);
 	
     print "Please ignore warnings about \"unable to write 'random state\' <br><br>";
+
+	#print '<p><strong>Creating 2048 bit Diffie-Hellman parameters used by OpenVPN.<br>';
+	#print "Saving to $store_dir/dhparam2048.pem.</strong><br>";
+	#$cmd = "openssl dhparam -rand '$config[random]' -out '$config[private_dir]/dhparam2048.pem' 2048";
+	#print $cmd.'<br>';
+	#flush();
+	#flush_exec($cmd,200);
+
 	
 	#
     # Create a TLS auth key for OpenVPN if openvpn is installed
@@ -665,12 +673,7 @@ EOS;
 		echo "openvpn --genkey --secret". $config[private_dir] . "/takey.pem<br>";
 	}
 
-	#print '<p><strong>Creating 2048 bit Diffie-Hellman parameters used by OpenVPN.<br>';
-	#print "Saving to $store_dir/dhparam2048.pem.</strong><br>";
-	#$cmd = "openssl dhparam -rand '$config[random]' -out '$config[private_dir]/dhparam2048.pem' 2048";
-	#print $cmd.'<br>';
-	#flush();
-	#flush_exec($cmd,200);
+
 	
 	#
 	# Step aside and let the users in (create index.php files).  
@@ -837,12 +840,12 @@ E-mail: <a href=mailto:someone@somewhere.com>someone@somewhere.com</a>&nbsp;&nbs
 	<tr>
 	<td>
 	<strong>Key Size</strong> <font color=red>*</font><br>
-	Enter the size of your certificate key.
+	Enter the size of your certificate key. Recommend 2048+
 	</td>
 	<td><select name=keysize>
 
 	<?php
-        for ( $i = 512 ; $i <= 4096 ; $i+=512 ) {
+        for ( $i = 1024 ; $i <= 4096 ; $i+=512 ) {
             print "<option value=$i " . ($keysize == $i ? "selected='selected'" : "") . ">$i bits</option>\n" ;
         }
 	?>
