@@ -62,7 +62,7 @@ crl_extentions	 = crl_ext
 default_days     = 365
 default_crl_days = 30
 preserve         = no
-default_md       = sha256
+default_md       = $config[default_md]
 
 [ req ]
 default_bits        = $keysize
