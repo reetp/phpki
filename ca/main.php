@@ -15,7 +15,7 @@ case 'dl_takey':
 	break;
 
 case 'dl_dhparam':
-	upload("$config[private_dir]/dhparam1024.pem", "$config[ca_prefix]dhparam1024.pem", 'application/octet-stream');
+	upload("$config[private_dir]/dhparam2048.pem", "$config[ca_prefix]dhparam2048.pem", 'application/octet-stream');
 	break;
 
 case 'dl_root':
@@ -148,7 +148,7 @@ default:
 	<td>This key can be used with OpenVPN as a standalone auth mechanism, or as an additional TLS authentication.</td></tr>
  <?php }
  ?>
- <?php if (file_exists ($config[private_dir] . '/dhparam1024.pem')) {
+ <?php if (file_exists ($config[private_dir] . '/dhparam2048.pem')) {
 	?>
 	<tr><td style="text-align: center; vertical-align: middle; font-weight: bold;">
 	<a href="<?php echo $PHP_SELF?>?stage=dl_dhparam">Download the Diffie-Hellman parameters</a><br><br>

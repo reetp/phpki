@@ -635,26 +635,27 @@ EOS;
 	#
 	# Create dhparam files for OpenVPN and others.
 	#
-	print '<p><strong>Creating 1024 bit Diffie-Hellman parameters used by OpenVPN.<br>';
-	print "Saving to $config[private_dir]/dhparam1024.pem.</strong><br>";
-	$cmd = "openssl dhparam -rand '$config[random]' -out '$config[private_dir]/dhparam1024.pem' 1024";
-	print $cmd.'<br>';
-    // This works but still errors in logs
+	#print '<p><strong>Creating 1024 bit Diffie-Hellman parameters used by OpenVPN.<br>';
+	#print "Saving to $config[private_dir]/dhparam1024.pem.</strong><br>";
+	#$cmd = "openssl dhparam -rand '$config[random]' -out '$config[private_dir]/dhparam1024.pem' 1024";
+	#print $cmd.'<br>';
+	#flush();
+	#flush_exec($cmd,100);
+
+    #print "Please ignore warnings about \"unable to write 'random state\' <br><br>";
+
+	// This method works but still errors in logs
     // exec(DH . "-rand '$config[random]' -out '$config[private_dir]/dhparam1024.pem' 1024");
 	// exec(DH . " -out '$config[private_dir]/dhparam1024.pem' 1024");
 	
+	print '<p><strong>Creating 2048 bit Diffie-Hellman parameters used by OpenVPN.<br>';
+	print "Saving to $store_dir/dhparam2048.pem.</strong><br>";
+	$cmd = "openssl dhparam -rand '$config[random]' -out '$config[private_dir]/dhparam2048.pem' 2048";
+	print $cmd.'<br>';
 	flush();
-	flush_exec($cmd,100);
+	flush_exec($cmd,200);
 	
-    print "Please ignore warnings about \"unable to write 'random state\' <br><br>";
-
-	#print '<p><strong>Creating 2048 bit Diffie-Hellman parameters used by OpenVPN.<br>';
-	#print "Saving to $store_dir/dhparam2048.pem.</strong><br>";
-	#$cmd = "openssl dhparam -rand '$config[random]' -out '$config[private_dir]/dhparam2048.pem' 2048";
-	#print $cmd.'<br>';
-	#flush();
-	#flush_exec($cmd,200);
-
+	print "Please ignore warnings about \"unable to write 'random state\' <br><br>";
 	
 	#
     # Create a TLS auth key for OpenVPN if openvpn is installed

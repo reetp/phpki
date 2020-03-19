@@ -475,7 +475,7 @@ function ta_key_text() {
 // Returns the dhparam file
 function dhparam_text() {
         global $config;
-        return(shell_exec('cat '.escshellarg($config['private_dir']).'/dhparam1024.pem 2>&1'));
+        return(shell_exec('cat '.escshellarg($config['private_dir']).'/dhparam2048.pem 2>&1'));
 }
 
 // Returns the root CA certificate file (PEM Encoded)
