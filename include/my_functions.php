@@ -74,12 +74,17 @@ function gpvar($v) {
 # Sort a two multidimensional array by one of it's columns
 #
 function csort($array, $column, $ascdec=SORT_ASC){    
-	if (sizeof($array) == 0) return $array;
 
-	foreach($array as $x) $sortarr[]=$x[$column];
-	array_multisort($sortarr, $ascdec, $array);  
+    if (sizeof($array) == 0) return $array;
 
-	return $array;
+    // Sort by digital date rather than text date
+    if ($column == 'issued') $column = "issuedSort";
+    if ($column == 'expires') $column = 'expiresSort';
+    
+    foreach($array as $x) $sortarr[]=$x[$column];
+    array_multisort($sortarr, $ascdec, $array);
+
+    return $array;
 }
 
 
