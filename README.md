@@ -18,6 +18,10 @@ I'm sure it is primitive by todays standards but does what I need.
 
 I will try and maintain it for the foreseeable future.
 
+Note I have changed the default admin from 'phpkiadmin' to 'admin' for utilisation on KoozaliSME Server.
+
+You can modify this as required as per the README below.
+
 
 About this fork
 ===============
@@ -116,7 +120,7 @@ you specified during setup.
 
 Normal users may only manage the certificates they create.  Administrators
 can manage all certificates.  The default administrator account is 
-"pkiadmin".  The secure.sh script will attempt to add this user to your 
+"admin".  The secure.sh script will attempt to add this user to your 
 phpkipasswd file when it is first created.  Other users can be made 
 administrators by carefully editing the $PHPki_admins assignment in 
 config/config.php under your certificate store directory.

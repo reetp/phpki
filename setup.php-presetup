@@ -287,7 +287,7 @@ case 'write':
 # Define default md
 \$config['default_md']         = 'sha512';
 
-\$PHPki_admins = Array(md5('pkiadmin'));
+\$PHPki_admins = Array(md5('admin'));
 
 define('OPENSSL',\$config['openssl_bin'].' ');
 define('X509', OPENSSL . ' x509 ');
@@ -655,7 +655,7 @@ EOS;
 	flush();
 	flush_exec($cmd,200);
 	
-	print "Please ignore warnings about \"unable to write 'random state\' <br><br>";
+	print "Please ignore warnings about \"unable to write 'random state' <br><br>";
 	
 	#
     # Create a TLS auth key for OpenVPN if openvpn is installed
