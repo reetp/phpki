@@ -81,9 +81,16 @@ function csort($array, $column, $ascdec=SORT_ASC){
     if ($column == 'issued') $column = "issuedSort";
     if ($column == 'expires') $column = 'expiresSort';
     
-    foreach($array as $x) $sortarr[]=$x[$column];
-    array_multisort($sortarr, $ascdec, $array);
-
+    if ($column == 'status') {
+		foreach($array as $x) {
+			$sortarr[]=$x[$column];
+			$sortdate[] = $x['expiresSort'];
+		}
+        array_multisort($sortarr, $ascdec, $sortdate, SORT_ASC, $array);
+    } else {
+        foreach($array as $x) $sortarr[]=$x[$column];
+        array_multisort($sortarr, $ascdec, $array);
+    }
     return $array;
 }
 
