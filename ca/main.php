@@ -11,23 +11,23 @@ $stage = gpvar('stage');
 switch($stage) {
 
 case 'dl_takey':
-	upload("$config[private_dir]/takey.pem", "$config[ca_prefix]takey.pem", 'application/octet-stream');
+	upload($config['private_dir'] . '/takey.pem', $config['ca_prefix'] . 'takey.pem', 'application/octet-stream');
 	break;
 
 case 'dl_dhparam':
-	upload("$config[private_dir]/dhparam2048.pem", "$config[ca_prefix]dhparam2048.pem", 'application/octet-stream');
+	upload($config['private_dir'] . '/dhparam2048.pem', $config['ca_prefix'] . 'dhparam2048.pem', 'application/octet-stream');
 	break;
 
 case 'dl_root':
-	upload("$config[cacert_pem]", "$config[ca_prefix]cacert.crt", 'application/x-x509-ca-cert');
+	upload($config['cacert_pem'], $config['ca_prefix'] . 'cacert.crt', 'application/x-x509-ca-cert');
 	break;
 
 case 'dl_crl':
-	upload("$config[cacrl_der]", "$config[ca_prefix]cacrl.crl", 'application/pkix-crl');
+	upload($config['cacrl_der'], $config['ca_prefix'] . 'cacrl.crl', 'application/pkix-crl');
 	break;
 
 case 'dl_crl_pem':
-	upload("$config[cacrl_pem]", "$config[ca_prefix]cacrl.crl", 'application/octet-stream');
+	upload($config['cacrl_pem'], $config['ca_prefix'] . 'cacrl.crl', 'application/octet-stream');
 	break;
 
 case 'gen_crl':
@@ -140,7 +140,7 @@ default:
 	<td>This is the official list of revoked certificates.  Using this list with your e-mail or
 	browser application is optional.  Some applications will automagically reference this list.</td></tr>
  <?php
- if (file_exists($config[private_dir] . '/takey.pem')) {
+ if (file_exists($config['private_dir'] . '/takey.pem')) {
 	?>
 	<tr><td style="text-align: center; vertical-align: middle; font-weight: bold;">
 	<a href="<?php echo $PHP_SELF?>?stage=dl_takey">Download the static pre-shared key</a><br><br>
@@ -148,7 +148,7 @@ default:
 	<td>This key can be used with OpenVPN as a standalone auth mechanism, or as an additional TLS authentication.</td></tr>
  <?php }
  ?>
- <?php if (file_exists ($config[private_dir] . '/dhparam2048.pem')) {
+ <?php if (file_exists ($config['private_dir'] . '/dhparam2048.pem')) {
 	?>
 	<tr><td style="text-align: center; vertical-align: middle; font-weight: bold;">
 	<a href="<?php echo $PHP_SELF?>?stage=dl_dhparam">Download the Diffie-Hellman parameters</a><br><br>
