@@ -23,8 +23,9 @@ $serial = escapeshellcmd(trim($_SERVER['QUERY_STRING']));
 # old Reg Ex doesnt work, new should do the work
 #$regexp = "^R\t.*\t.*\t$serial\t.*\t.*$";
 $regexp = "^R.*$serial.*$";
+$configIndex = $config['index'];
 
-if (exec("egrep '$regexp' $config[index]"))
+if (exec("egrep '$regexp' '$configIndex'"))
 	print '1';
 else
 	print '0';
