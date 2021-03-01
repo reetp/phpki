@@ -95,19 +95,19 @@ case 'download':
 
 	switch ($dl_type) {
 	case 'PKCS#12':
-		upload("$config[pfx_dir]/$serial.pfx", "$rec[common_name].p12", 'application/x-pkcs12');
+		upload($config['pfx_dir'] . "/$serial.pfx", "$rec[common_name].p12", 'application/x-pkcs12');
 		break;
 	case 'PEMCERT':
-		upload("$config[new_certs_dir]/$serial.pem", "$rec[common_name]-cert.pem",'application/pkix-cert');
+		upload($config['new_certs_dir'] . "/$serial.pem", "$rec[common_name]-cert.pem",'application/pkix-cert');
 		break;
 	case 'PEMKEY':
-		upload("$config[private_dir]/$serial-key.pem", "$rec[common_name]-key.pem",'application/octet-stream');
+		upload($config['private_dir'] . "/$serial-key.pem", "$rec[common_name]-key.pem",'application/octet-stream');
 		break;
 	case 'PEMBUNDLE':
-		upload(array("$config[private_dir]/$serial-key.pem","$config[new_certs_dir]/$serial.pem"), "$rec[common_name]-Bundle.pem",'application/octet-stream');
+		upload(array($config['private_dir'] . "/$serial-key.pem",$config['new_certs_dir'] . "/$serial.pem"), $rec['common_name'] . "-Bundle.pem",'application/octet-stream');
 		break;
 	case 'PEMCABUNDLE':
-		upload(array("$config[private_dir]/$serial-key.pem","$config[new_certs_dir]/$serial.pem",$config['cacert_pem']), "$rec[common_name]-CABundle.pem",'application/octet-stream');
+		upload(array($config['private_dir'] . "/$serial-key.pem",$config['new_certs_dir'] . "/$serial.pem", $config['cacert_pem']), $rec['common_name'] . "-CABundle.pem",'application/octet-stream');
 		break;
 	default:
 		header("Location: ${PHP_SELF}?$qstr_sort&$qstr_filter");
@@ -139,14 +139,14 @@ case 'revoke-form':
 
 	print '
        	<td>
-	    '.htvar($rec[serial]).'<br>
-       	'.htvar($rec[common_name]).'<br>
-       	'.htvar($rec[email]).'<br>
-       	'.htvar($rec[organization]).'<br>
-       	'.htvar($rec[unit]).'<br>
-       	'.htvar($rec[locality]).'<br>
-       	'.htvar($rec[province]).'<br>
-       	'.htvar($rec[country]).'<br>
+	    '.htvar($rec['serial']).'<br>
+       	'.htvar($rec['common_name']).'<br>
+       	'.htvar($rec['email']).'<br>
+       	'.htvar($rec['organization']).'<br>
+       	'.htvar($rec['unit']).'<br>
+       	'.htvar($rec['locality']).'<br>
+       	'.htvar($rec['province']).'<br>
+       	'.htvar($rec['country']).'<br>
        	</td>
 	   	</tr></table>
 	    <h4>Are you sure?</h4>
