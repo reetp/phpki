@@ -674,7 +674,7 @@ EOS;
 	} else {
 		echo "openvpn is required to generate a takey.pem<br>";
 		echo "You can create one later like this:<br>";
-		echo "openvpn --genkey --secret". $config[private_dir] . "/takey.pem<br>";
+		echo "openvpn --genkey --secret". $config['private_dir'] . "/takey.pem<br>";
 	}
 
 
