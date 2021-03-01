@@ -11,7 +11,7 @@ $stage = gpvar('stage');
 switch($stage) {
 
 case 'dl_root':
-	upload("$config[cacert_pem]", "$config[ca_prefix]cacert.crt", 'application/x-x509-ca-cert');
+	upload($config['cacert_pem'], $config['ca_prefix'] . "cacert.crt", 'application/x-x509-ca-cert');
 	break;
 
 case 'display_root':
@@ -29,11 +29,11 @@ case 'display_root':
 	break;
 
 case 'dl_crl':
-	upload("$config[cacrl_der]", "$config[ca_prefix]cacrl.crl", 'application/pkix-crl');
+	upload($config['cacrl_der'], $config['ca_prefix'] . "cacrl.crl", 'application/pkix-crl');
 	break;
 
 case 'dl_crl_pem':
-       upload("$config[cacrl_pem]", "$config[ca_prefix]cacrl.crl", 'application/octet-stream');
+       upload($config['cacrl_pem'], $config['ca_prefix'] . "cacrl.crl", 'application/octet-stream');
        break;
 
 default:
