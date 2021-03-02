@@ -45,24 +45,48 @@ function CA_create_cnf($country='',$province='',$locality='',$organization='',$u
 		$server_altnames = "DNS:$common_name,email:copy";
 	}
 	
-	$cnf_contents = "
-HOME             = $config[home_dir] 
-RANDFILE         = $config[random]
-dir	             = $config[ca_dir]
-certs            = $config[cert_dir]
-crl_dir	         = $config[crl_dir]
-database         = $config[index]
-new_certs_dir    = $config[new_certs_dir]
-private_dir      = $config[private_dir]
-serial           = $config[serial]
-certificate      = $config[cacert_pem]
-crl              = $config[cacrl_pem]
-private_key      = $config[cakey]
+$configHOME             = $config['home_dir'];
+$configRANDFILE         = $config['random'];
+$configCa_dir           = $config['ca_dir'];
+$configCert_dir         = $config['cert_dir'];
+$configCrl_dir          = $config['crl_dir'];
+$configDatabase         = $config['index'];
+$configNew_certs_dir    = $config['new_certs_dir'];
+$configPrivate_dir      = $config['private_dir'];
+$configSerial           = $config['serial'];
+$configCacert_pem       = $config['cacert_pem'];
+$configCacrl_pem        = $config['cacrl_pem'];
+$configCakey            = $config['cakey'];
+$configDefault_md       = $config['default_md'];
+$configBase_url         = $config['base_url'];
+$configCrl_dist         = $config['crl_distrib'];
+$configComment_root     = $config['comment_root'];
+$configPolicy_url       = $config['policy_url'];
+$configRevoke_url       = $config['revoke_url'];
+$configComment_email    = $config['comment_email'];
+$configComment_sign     = $config['comment_sign'];
+$configComment_srv      = $config['comment_srv'];
+	
+	
+	
+$cnf_contents = "
+HOME             = $configHOME 
+RANDFILE         = $configRANDFILE
+dir	             = $configCa_dir
+certs            = $configCert_dir
+crl_dir	         = $configCrl_dir
+database         = $configDatabase
+new_certs_dir    = $configNew_certs_dir
+private_dir      = $configPrivate_dir
+serial           = $configSerial
+certificate      = $configCacert_pem
+crl              = $configCacrl_pem
+private_key      = $configCakey
 crl_extentions	 = crl_ext
 default_days     = 365
 default_crl_days = 30
 preserve         = no
-default_md       = $config[default_md]
+default_md       = $configDefault_md
 
 [ req ]
 default_bits        = $keysize
@@ -137,10 +161,10 @@ keyUsage               = cRLSign, keyCertSign
 nsCertType             = sslCA, emailCA, objCA
 subjectKeyIdentifier   = hash
 subjectAltName         = email:copy
-crlDistributionPoints  = URI:$config[base_url]$config[crl_distrib]
-nsComment              = $config[comment_root]
+crlDistributionPoints  = URI:$configBase_url$configCrl_dist
+nsComment              = $configComment_root
 #nsCaRevocationUrl     =
-nsCaPolicyUrl          = $config[base_url]$config[policy_url]
+nsCaPolicyUrl          = $configBase_url$configPolicy_url
 
 [ email_ext ]
 basicConstraints       = critical, CA:false
@@ -151,11 +175,11 @@ subjectKeyIdentifier   = hash
 authorityKeyIdentifier = keyid:always, issuer:always
 subjectAltName         = email:copy
 issuerAltName          = issuer:copy
-crlDistributionPoints  = URI:$config[base_url]$config[crl_distrib]
-nsComment              = $config[comment_email]
-nsBaseUrl              = $config[base_url]
-nsRevocationUrl        = $config[base_url]$config[revoke_url]$serial
-nsCaPolicyUrl          = $config[base_url]$config[policy_url]
+crlDistributionPoints  = URI:$configBase_url$configCrl_dist
+nsComment              = $configComment_email
+nsBaseUrl              = $configBase_url
+nsRevocationUrl        = $configBase_url$configRevoke_url$serial
+nsCaPolicyUrl          = $configBase_url$configPolicy_url
 
 [ email_signing_ext ]
 basicConstraints       = critical, CA:false
@@ -166,11 +190,11 @@ subjectKeyIdentifier   = hash
 authorityKeyIdentifier = keyid:always, issuer:always
 subjectAltName         = email:copy
 issuerAltName          = issuer:copy
-crlDistributionPoints  = URI:$config[base_url]$config[crl_distrib]
-nsComment              = $config[comment_sign]
-nsBaseUrl              = $config[base_url]
-nsRevocationUrl        = $config[base_url]$config[revoke_url]$serial
-nsCaPolicyUrl          = $config[base_url]$config[policy_url]
+crlDistributionPoints  = URI:$configBase_url$configCrl_dist
+nsComment              = $configComment_sign
+nsBaseUrl              = $configBase_url
+nsRevocationUrl        = $configBase_url$configRevoke_url$serial
+nsCaPolicyUrl          = $configBase_url$configPolicy_url
 
 [ server_ext ]
 basicConstraints        = critical, CA:false
@@ -181,11 +205,11 @@ subjectKeyIdentifier    = hash
 authorityKeyIdentifier  = keyid:always, issuer:always
 subjectAltName          = $server_altnames
 issuerAltName           = issuer:copy
-crlDistributionPoints   = URI:$config[base_url]$config[crl_distrib]
-nsComment               = $config[comment_srv]
-nsBaseUrl               = $config[base_url]
-nsRevocationUrl         = $config[base_url]$config[revoke_url]$serial
-nsCaPolicyUrl           = $config[base_url]$config[policy_url]
+crlDistributionPoints   = URI:$configBase_url$configCrl_dist
+nsComment               = $configComment_srv
+nsBaseUrl               = $configBase_url
+nsRevocationUrl         = $configBase_url$configRevoke_url$serial
+nsCaPolicyUrl           = $configBase_url$configPolicy_url
 
 [ time_stamping_ext ]
 basicConstraints       = CA:false
@@ -195,10 +219,10 @@ subjectKeyIdentifier   = hash
 authorityKeyIdentifier = keyid:always, issuer:always
 subjectAltName         = DNS:$common_name,email:copy
 issuerAltName          = issuer:copy
-crlDistributionPoints   = URI:$config[base_url]$config[crl_distrib]
+crlDistributionPoints   = URI:$configBase_url$configCrl_dist
 nsComment              = $config[comment_stamp]
-nsBaseUrl              = $config[base_url]
-nsRevocationUrl        = $config[base_url]$config[revoke_url]$serial
+nsBaseUrl              = $configBase_url
+nsRevocationUrl        = $configBase_url$configRevoke_url$serial
 
 [ vpn_client_ext ]
 basicConstraints        = critical, CA:false
@@ -546,10 +570,11 @@ function CA_revoke_cert($serial) {
 	$fd = fopen($config['index'],'a');
 	flock($fd, LOCK_EX);
 
-	$certfile     = "$config[new_certs_dir]/$serial.pem";
-	
+	$certfile     = $config['new_certs_dir'] . "/$serial.pem";
 	$cmd_output[] = 'Revoking the certificate.';
-	exec(CA." -config '$config[openssl_cnf]' -revoke ".escshellarg($certfile)." -passin pass:'$config[ca_pwd]' 2>&1", $cmd_output, $ret);
+	$configCa_pwd = $config['ca_pwd'];
+	$configOpenssl_cnf = $config['openssl_cnf'];
+	exec(CA." -config $configOpenssl_cnf -revoke ".escshellarg($certfile)." -passin pass:$ConfigCa_pwd 2>&1", $cmd_output, $ret);
 
 	if ($ret == 0) {
 		unset($cmd_output);
@@ -578,11 +603,10 @@ function CA_create_cert($cert_type='email',$country,$province,$locality,$organiz
 	# Get the next available serial number
 	$serial = trim(implode('',file($config['serial'])));
 
-	$userkey   = $config['private_dir'].'/'.$serial.'-key.pem';
-	$userreq   = $config['req_dir'].'/'.$serial.'-req.pem';
-	$usercert  = $config['new_certs_dir'].'/'.$serial.'.pem';
-	$userder   = $config['cert_dir'].'/'.$serial.'.der';
-	$userpfx   = $config['pfx_dir'].'/'.$serial.'.pfx';
+	$userkey   = $config['private_dir'] . "/$serial-key.pem";
+	$userreq   = $config['req_dir'] ."/$serial-req.pem";
+	$userder   = $config['cert_dir'] . "/$serial.der";
+	$userpfx   = $config['pfx_dir'] . "/$serial.pfx";
 
 	$expiry_days = round($expiry * 365.25, 0);
 
@@ -609,7 +633,8 @@ function CA_create_cert($cert_type='email',$country,$province,$locality,$organiz
 	if ($ret == 0) {
 		unset($cmd_output);
 		$cmd_output[] = "Signing $cert_type certificate request.";
-		exec(CA." -config '$cnf_file' -in '$userreq' -out /dev/null -notext -days '$expiry_days' -passin pass:'$config[ca_pwd]' -batch -extensions $extensions 2>&1", $cmd_output, $ret);
+		$configCa_pwd = $config['ca_pwd'];
+		exec(CA." -config '$cnf_file' -in '$userreq' -out /dev/null -notext -days '$expiry_days' -passin pass:'$configCa_pwd' -batch -extensions $extensions 2>&1", $cmd_output, $ret);
 	};
 
 	# Create DER format certificate
@@ -623,14 +648,18 @@ function CA_create_cert($cert_type='email',$country,$province,$locality,$organiz
 	if ($ret == 0) {
 		unset($cmd_output);
 		$cmd_output[] = "Creating PKCS12 format certificate.";
+		$configCacert_pem = $config['cacert_pem'];
+		$configOrganization = $config['organization'];
+		$configRandom = $config['random'];
+		
 		if (($_passwd) && ($_passwd != "''")) {
 			$cmd_output[] = "infile: $usercert   keyfile: $userkey   outfile: $userpfx  pass: $_passwd";
-			exec(PKCS12." -export -in '$usercert' -inkey '$userkey' -certfile '$config[cacert_pem]' -caname '$config[organization]' -out '$userpfx' -name $friendly_name -rand '$config[random]' -passin pass:$_passwd -passout pass:$_passwd  2>&1", $cmd_output, $ret);
+			exec(PKCS12." -export -in '$usercert' -inkey '$userkey' -certfile '$configCacert_pem' -caname '$configOrganization' -out '$userpfx' -name $friendly_name -rand '$configRandom' -passin pass:$_passwd -passout pass:$_passwd  2>&1", $cmd_output, $ret);
 		}
 		else {
 			$cmd_output[] = "infile: $usercert   keyfile: $userkey   outfile: $userpfx";
 			// reetp - this needs looking at
-			exec(PKCS12." -export -in '$usercert' -inkey '$userkey' -certfile '$config[cacert_pem]' -caname '$config[organization]' -out '$userpfx' -name $friendly_name -nodes -passout pass: 2>&1", $cmd_output, $ret);
+			exec(PKCS12." -export -in '$usercert' -inkey '$userkey' -certfile '$configCacert_pem' -caname '$configOrganization' -out '$userpfx' -name $friendly_name -nodes -passout pass: 2>&1", $cmd_output, $ret);
 			//exec(PKCS12." -export -in '$usercert' -inkey '$userkey' -certfile '$config[cacert_pem]' -caname '$config[organization]' -out '$userpfx' -name $friendly_name  -nodes 2>&1", $cmd_output, $ret);
 		}
 	};
@@ -692,7 +721,7 @@ function CA_renew_cert($old_serial,$expiry,$passwd) {
 	$country      = $rec['country'];
 	$province     = $rec['province'];
 	$locality     = $rec['locality'];
-	$organization = $rec['organiztion'];
+	$organization = $rec['organization'];
 	$unit         = $rec['unit'];
 	$common_name  = $rec['common_name'];
 	$email        = $rec['email'];
@@ -704,13 +733,14 @@ function CA_renew_cert($old_serial,$expiry,$passwd) {
 	# Get the next available serial number
 	$serial = trim(implode('',file($config['serial'])));
 
-	$old_userkey = $config['private_dir'].'/'.$old_serial.'-key.pem';
-	$old_userreq = $config['req_dir'].'/'.$old_serial.'-req.pem';
-	$userkey     = $config['private_dir'].'/'.$serial.'-key.pem';
-	$userreq     = $config['req_dir'].'/'.$serial.'-req.pem';
-	$usercert    = $config['new_certs_dir'].'/'.$serial.'.pem';
-	$userder     = $config['cert_dir'].'/'.$serial.'.der';
-	$userpfx     = $config['pfx_dir'].'/'.$serial.'.pfx';
+	$old_userkey = $config['private_dir'] . "$old_serial-key.pem";
+	$old_userreq = $config['req_dir'] . "/$old_serial-req.pem";
+	$userkey     = $config['private_dir'] . "/$serial-key.pem";
+	$userreq     = $config['req_dir'] . "/$serial-req.pem";
+	$usercert    = $config['new_certs_dir'] . "/$serial.pem";
+	$userder     = $config['cert_dir'] . "/$serial.der";
+	$userpfx     = $config['pfx_dir'] . "/$serial.pfx";
+
 
 	$expiry_days = round($expiry * 365.25, 0);
 
@@ -737,11 +767,16 @@ function CA_renew_cert($old_serial,$expiry,$passwd) {
 	# Escape dangerous characters in user input.
 	$_passwd    = escshellarg($passwd);
 
+	$configCa_pwd = $config['ca_pwd'];
+	$configCacert_pem = $config['cacert_pem'];
+	$configOrganization = $config['organization'];
+	$configRandom = $config['random'];
+	
 	# Sign the certificate request and create the certificate.
 	if ($ret == 0) {
 		unset($cmd_output);
 		$cmd_output[] = "Signing the $cert_type certificate request.";
-		exec(CA." -config '$cnf_file' -in '$userreq' -out /dev/null -notext -days '$expiry_days' -passin pass:'$config[ca_pwd]' -batch -extensions $extensions 2>&1", $cmd_output, $ret);
+		exec(CA." -config '$cnf_file' -in '$userreq' -out /dev/null -notext -days '$expiry_days' -passin pass:'$configCa_pwd' -batch -extensions $extensions 2>&1", $cmd_output, $ret);
 	};
 
 	# Create DER format certificate
@@ -757,12 +792,12 @@ function CA_renew_cert($old_serial,$expiry,$passwd) {
 		$cmd_output[] = "Creating PKCS12 format certificate.";
 		if (($_passwd) && ($_passwd != "''")) {
 			$cmd_output[] = "infile: $usercert   keyfile: $userkey   outfile: $userpfx  pass: $_passwd";
-			exec(PKCS12." -export -in '$usercert' -inkey '$userkey' -certfile '$config[cacert_pem]' -caname '$config[organization]' -out '$userpfx' -name $friendly_name -rand '$config[random]' -passin pass:$_passwd -passout pass:$_passwd  2>&1", $cmd_output, $ret);
+			exec(PKCS12." -export -in '$usercert' -inkey '$userkey' -certfile '$configCacert_pem' -caname '$configOrganization' -out '$userpfx' -name $friendly_name -rand '$configRandom' -passin pass:$_passwd -passout pass:$_passwd  2>&1", $cmd_output, $ret);
 		}
 		else {
 			$cmd_output[] = "infile: $usercert   keyfile: $userkey   outfile: $userpfx";
             // reetp - this needs looking at
-			exec(PKCS12." -export -in '$usercert' -inkey '$userkey' -certfile '$config[cacert_pem]' -caname '$config[organization]' -out '$userpfx' -name $friendly_name  -nodes -passout pass: 2>&1", $cmd_output, $ret);
+			exec(PKCS12." -export -in '$usercert' -inkey '$userkey' -certfile '$configCacert_pem' -caname '$configOrganization' -out '$userpfx' -name $friendly_name  -nodes -passout pass: 2>&1", $cmd_output, $ret);
 			//exec(PKCS12." -export -in '$usercert' -inkey '$userkey' -certfile '$config[cacert_pem]' -caname '$config[organization]' -out '$userpfx' -name $friendly_name  -nodes 2>&1", $cmd_output, $ret);
 
 		}
@@ -805,15 +840,19 @@ function CA_renew_cert($old_serial,$expiry,$passwd) {
 function CA_generate_crl() {
 	global $config;
 
+	$configOpenssl_cnf = $config['openssl_cnf'];
+	$configCacrl_pem = $config['cacrl_pem'];
+	$configCa_pwd = $config['ca_pwd'];
+	$configCacrl_der = $config['cacrl_der'];
 	$ret = 0;
 
 	$cmd_output[] = "Generating Certificate Revocation List.";
-	exec(CA. " -gencrl -config '$config[openssl_cnf]' -out '$config[cacrl_pem]' -passin pass:'$config[ca_pwd]' 2>&1", $cmd_output, $ret);
+	exec(CA. " -gencrl -config '$configOpenssl_cnf' -out '$configCacrl_pem' -passin pass:'$configCa_pwd' 2>&1", $cmd_output, $ret);
 
 	if ($ret == 0) {
 		unset($cmd_output);
 		$cmd_output[] = "Creating DER format Certificate Revocation List.";
-		exec(CRL." -in '$config[cacrl_pem]' -out '$config[cacrl_der]' -inform PEM -outform DER 2>&1", $cmd_output, $ret);
+		exec(CRL." -in '$configCacrl_der' -out '$configCacrl_der' -inform PEM -outform DER 2>&1", $cmd_output, $ret);
 	}
 
 	return array(($ret == 0 ? true : false), implode('<br>',$cmd_output));
@@ -826,15 +865,16 @@ function CA_generate_crl() {
 function CA_remove_cert($serial) {
 	global $config;
 
-	$userreq  = $config['req_dir'].'/'.$serial.'-req.pem';
-	$userkey  = $config['private_dir'].'/'.$serial.'-key.pem';
-	$usercert = $config['new_certs_dir'].'/'.$serial.'.pem';
-	$userder  = $config['cert_dir'].'/'.$serial.'.der';
-	$userpfx  = $config['pfx_dir'].'/'.$serial.'.pfx';
+	$userreq  = $config['req_dir'] . "/$serial-req.pem";
+	$userkey  = $config['private_dir'] . "/$serial-key.pem";
+	$usercert = $config['new_certs_dir'] . "/$serial.pem";
+	$userder  = $config['cert_dir'] . "/$serial.der";
+	$userpfx  = $config['pfx_dir'] ."/$serial.pfx";
 	
+	$configIndex = $config['index'];
 
 	# Wait here if another user has the database locked.
-	$fd = fopen($config['index'],'a');
+	$fd = fopen($configIndex,'a');
 	flock($fd, LOCK_EX);
 
 	if( file_exists($userreq))  unlink($userreq);
@@ -843,11 +883,11 @@ function CA_remove_cert($serial) {
 	if( file_exists($userder))  unlink($userder);
 	if( file_exists($userpfx))  unlink($userpfx);
 
-	$tmpfile = $config['index'].'.tmp';
-	copy($config['index'], $tmpfile);
+	$tmpfile = $configIndex .'.tmp';
+	copy($configIndex , $tmpfile);
 
 	$regexp = "^[VR]\t.*\t.*\t".$serial."\t.*\t.*$";
-	exec('egrep -v '.escshellarg($regexp)." $tmpfile > $config[index] 2>/dev/null");
+	exec('egrep -v '.escshellarg($regexp)." $tmpfile > $configIndex 2>/dev/null");
 
 	unlink($tmpfile);
 	fclose($fd);
