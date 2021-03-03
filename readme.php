@@ -10,4 +10,3 @@ print '<pre>';
 readfile('./README.md');
 print '</pre>';
 printFooter();
-?>

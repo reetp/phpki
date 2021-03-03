@@ -10,5 +10,3 @@ include('../html/include/common.php') ;
 include('../html/include/openssl_functions.php') ;
 
 CA_generate_crl();
-
-?>

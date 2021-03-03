@@ -7,10 +7,10 @@
 #
 # PROTOCOL:
 # The client should issue an HTTP GET request using a URL that is
-# the concatenation of the revocation url and certificate serial 
+# the concatenation of the revocation url and certificate serial
 # number. (i.e. http://www.host.dom/phpki/ns_revoke_query.php?10A5F2)
 #
-# The server should return a document of type 
+# The server should return a document of type
 # application/x-netscape-revocation containing a single character
 # '1' if the certificate is revoked, '0' if it is valid.
 #
@@ -25,8 +25,8 @@ $serial = escapeshellcmd(trim($_SERVER['QUERY_STRING']));
 $regexp = "^R.*$serial.*$";
 $configIndex = $config['index'];
 
-if (exec("egrep '$regexp' '$configIndex'"))
-	print '1';
-else
-	print '0';
-?>
+if (exec("egrep '$regexp' '$configIndex'")) {
+    print '1';
+} else {
+    print '0';
+}
