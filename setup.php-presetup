@@ -3,27 +3,27 @@ include('./config.php');
 include('./include/my_functions.php');
 include('./include/common.php');
 
-function flush_exec($command, $line_length=200) {
-        $handle = popen("$command 2>&1",'r');
+function flush_exec($command, $line_length = 200)
+{
+        $handle = popen("$command 2>&1", 'r');
 
         $line = '';
-        while (! feof($handle)) {
-                $chr = fread($handle, 1);
-                $line .= $chr;
-                if ($chr == "\n") {
-                        print str_replace("\n", "<br>\n", $line);
-                        $line = '';
-                        flush();
-                }
-                elseif (strlen($line) > $line_length) {
-                        print $line."<br>\n";
-                        $line = '';
-                        flush();
-                }
+    while (! feof($handle)) {
+            $chr = fread($handle, 1);
+            $line .= $chr;
+        if ($chr == "\n") {
+                print str_replace("\n", "<br>\n", $line);
+                $line = '';
+                flush();
+        } elseif (strlen($line) > $line_length) {
+                print $line."<br>\n";
+                $line = '';
+                flush();
         }
+    }
         print $line."<br>\n";
-	flush();
-	return;
+    flush();
+    return;
 }
 
 $version = PHPKI_VERSION;
@@ -69,7 +69,9 @@ $ca_prefix    = gpvar('ca_prefix');
 $header_title = gpvar('header_title');
 $store_dir    = gpvar('store_dir');
 
-if ($base_url && substr($base_url,-1) != '/') $base_url .= '/';
+if ($base_url && substr($base_url, -1) != '/') {
+    $base_url .= '/';
+}
 
 $hidden_fields = '
     <input type=hidden name=country value="' . htvar($country) . '">
@@ -101,62 +103,99 @@ $hidden_fields = '
 ';
 
 switch ($stage) {
-case 'validate':
-	$er = '';
+    case 'validate':
+        $er = '';
 
-	if (! $country)      $er .= 'Missing Country<br>';
-	if (! $province)     $er .= 'Missing State/Province<br>';
-	if (! $locality)     $er .= 'Missing Locality<br>';
-	if (! $organization) $er .= 'Missing Organization<br>';
-	if (! $unit)         $er .= 'Missing Unit/Department<br>';
-	if (! $contact)      $er .= 'Missing Contact E-mail Address<br>';
-	if (! $common_name)  $er .= 'Missing Common Name<br>';
-	if (! $passwd)       $er .= 'Missing Certificate Password<br>';
-	if (! $passwdv)      $er .= 'Missing Certificate Password Verification "Again"<br>';
-	if (! $header_title) $er .= 'Missing Header Title<br>';
-	if (! $passwd_file)  $er .= 'Missing User Password File Location';
-	if (! $store_dir)    $er .= 'Missing Storage Directory<br>';
+        if (! $country) {
+            $er .= 'Missing Country<br>';
+        }
+        if (! $province) {
+            $er .= 'Missing State/Province<br>';
+        }
+        if (! $locality) {
+            $er .= 'Missing Locality<br>';
+        }
+        if (! $organization) {
+            $er .= 'Missing Organization<br>';
+        }
+        if (! $unit) {
+            $er .= 'Missing Unit/Department<br>';
+        }
+        if (! $contact) {
+            $er .= 'Missing Contact E-mail Address<br>';
+        }
+        if (! $common_name) {
+            $er .= 'Missing Common Name<br>';
+        }
+        if (! $passwd) {
+            $er .= 'Missing Certificate Password<br>';
+        }
+        if (! $passwdv) {
+            $er .= 'Missing Certificate Password Verification "Again"<br>';
+        }
+        if (! $header_title) {
+            $er .= 'Missing Header Title<br>';
+        }
+        if (! $passwd_file) {
+            $er .= 'Missing User Password File Location';
+        }
+        if (! $store_dir) {
+            $er .= 'Missing Storage Directory<br>';
+        }
 
-	$countrycode = strtoupper($country);
+        $countrycode = strtoupper($country);
 
-	if (! preg_match("/\b[A-Z][A-Z]\b/", $countrycode, $match) ) {
-	    $er .= 'Country Code must be ISO 3166 two letters <br>'; 
-	}
-	
-	if ( $passwd && strlen($passwd) < 8 )
-		$er .= 'Certificate password is too short.<br>';
+        if (! preg_match("/\b[A-Z][A-Z]\b/", $countrycode, $match)) {
+            $er .= 'Country Code must be ISO 3166 two letters <br>';
+        }
+    
+        if ($passwd && strlen($passwd) < 8) {
+            $er .= 'Certificate password is too short.<br>';
+        }
 
-	if ( $passwd and $passwd != $passwdv )
-		$er .= 'Password and password verification do not match.<br>';
+        if ($passwd and $passwd != $passwdv) {
+            $er .= 'Password and password verification do not match.<br>';
+        }
 
-        if ( $contact && ! is_email($contact) )
+        if ($contact && ! is_email($contact)) {
                 $er .= 'E-mail address ('. htvar($contact) . ') may be invalid.<br>';
+        }
 
-	if (strpos($store_dir,$_SERVER['DOCUMENT_ROOT']) === 0)
-		$er .= 'Store directory must exist somewhere outside of DOCUMENT_ROOT ('.$_SERVER['DOCUMENT_ROOT'].').<br>';
+        if (strpos($store_dir, $_SERVER['DOCUMENT_ROOT']) === 0) {
+            $er .= 'Store directory must exist somewhere outside of DOCUMENT_ROOT ('.$_SERVER['DOCUMENT_ROOT'].').<br>';
+        }
 
-	if (strpos($store_dir,dirname($_SERVER['SCRIPT_FILENAME'])) === 0)
-		$er .= 'Store directory cannot exist within the PHPki installation directory ('.dirname($_SERVER['SCRIPT_FILENAME']).').<br>';
+        if (strpos($store_dir, dirname($_SERVER['SCRIPT_FILENAME'])) === 0) {
+            $er .= 'Store directory cannot exist within the PHPki installation directory ('.dirname($_SERVER['SCRIPT_FILENAME']).').<br>';
+        }
 
-	if (! $er) {
-		if (! file_exists($store_dir) ) {
-			if ( ! mkdir("$store_dir",$store_perms)) $er .= "Could not create the store directory \"$store_dir\"<br>";
-		}
+        if (! $er) {
+            if (! file_exists($store_dir)) {
+                if (! mkdir("$store_dir", $store_perms)) {
+                    $er .= "Could not create the store directory \"$store_dir\"<br>";
+                }
+            }
 
-		if (file_exists($store_dir)) {
-			if (! chmod($store_dir, $store_perms)) $er .= "Could not change permissions on the store directory \"$store_dir\"<br>";
-			if (! is_readable($store_dir))  $er .= "The store directory \"$store_dir\" is not readable by the web server user \"$uname\"<br>";
-			if (! is_writeable($store_dir)) $er .= "The store directory \"$store_dir\: is not writeable by the web server user \"$uname\"<br>";
-		}
-		else {
-			$er .= "Store directory \"$store_dir\" does not exist.  You will have to manually create it as desribed in the setup form.<br>";
-		}
-	}
+            if (file_exists($store_dir)) {
+                if (! chmod($store_dir, $store_perms)) {
+                    $er .= "Could not change permissions on the store directory \"$store_dir\"<br>";
+                }
+                if (! is_readable($store_dir)) {
+                    $er .= "The store directory \"$store_dir\" is not readable by the web server user \"$uname\"<br>";
+                }
+                if (! is_writeable($store_dir)) {
+                    $er .= "The store directory \"$store_dir\: is not writeable by the web server user \"$uname\"<br>";
+                }
+            } else {
+                $er .= "Store directory \"$store_dir\" does not exist.  You will have to manually create it as desribed in the setup form.<br>";
+            }
+        }
 
-        if ( $er )
+        if ($er) {
                 $er = '<h2>ERROR(S) IN FORM:</h2><h4><blockquote>' . $er . '</blockquote></h4>';
+        }
 
-        if ($er)  {
+        if ($er) {
                 printHeader('setup');
                 ?>
 
@@ -171,37 +210,54 @@ case 'validate':
 
                 printFooter();
                 break;
-	}
+        }
 
-case 'write':
-	
-	printHeader('about');
+    case 'write':
+        printHeader('about');
 
-	#
-	#Create the file store directory structure.
-	#
+        #
+        #Create the file store directory structure.
+        #
 
-	print '<strong>Creating PHPki file store...</strong><br>';
-	flush();
+        print '<strong>Creating PHPki file store...</strong><br>';
+        flush();
 
-	if (! file_exists("$store_dir/config")) mkdir("$store_dir/config",$store_perms);
-	if (! file_exists("$store_dir/tmp")) mkdir("$store_dir/tmp",$store_perms);
-	if (! file_exists("$store_dir/CA")) mkdir("$store_dir/CA",$store_perms);
-	if (! file_exists("$store_dir/CA/certs")) mkdir("$store_dir/CA/certs",$store_perms);
-	if (! file_exists("$store_dir/CA/private")) mkdir("$store_dir/CA/private",$store_perms);
-	if (! file_exists("$store_dir/CA/newcerts")) mkdir("$store_dir/CA/newcerts",$store_perms);
-	if (! file_exists("$store_dir/CA/requests")) mkdir("$store_dir/CA/requests",$store_perms);
-	if (! file_exists("$store_dir/CA/crl")) mkdir("$store_dir/CA/crl",$store_perms);
-	if (! file_exists("$store_dir/CA/pfx")) mkdir("$store_dir/CA/pfx",$store_perms);
+        if (! file_exists("$store_dir/config")) {
+            mkdir("$store_dir/config", $store_perms);
+        }
+        if (! file_exists("$store_dir/tmp")) {
+            mkdir("$store_dir/tmp", $store_perms);
+        }
+        if (! file_exists("$store_dir/CA")) {
+            mkdir("$store_dir/CA", $store_perms);
+        }
+        if (! file_exists("$store_dir/CA/certs")) {
+            mkdir("$store_dir/CA/certs", $store_perms);
+        }
+        if (! file_exists("$store_dir/CA/private")) {
+            mkdir("$store_dir/CA/private", $store_perms);
+        }
+        if (! file_exists("$store_dir/CA/newcerts")) {
+            mkdir("$store_dir/CA/newcerts", $store_perms);
+        }
+        if (! file_exists("$store_dir/CA/requests")) {
+            mkdir("$store_dir/CA/requests", $store_perms);
+        }
+        if (! file_exists("$store_dir/CA/crl")) {
+            mkdir("$store_dir/CA/crl", $store_perms);
+        }
+        if (! file_exists("$store_dir/CA/pfx")) {
+            mkdir("$store_dir/CA/pfx", $store_perms);
+        }
 
 
-	#
-	# Create the PHPki CA configuration.
-	#
-	print '<strong>Writing configuration files...</strong><br>';
-	flush();
+        #
+        # Create the PHPki CA configuration.
+        #
+        print '<strong>Writing configuration files...</strong><br>';
+        flush();
 
-	$config_main_txt = <<<EOS
+        $config_main_txt = <<<EOS
 <?php
 # PHPki CONFIGURATION FILE
 # Automatically generated by PHPki.  Edit at your own peril.
@@ -300,18 +356,18 @@ define('DH', OPENSSL . ' dhparam ');
 ?>
 EOS;
 
-	#
-	# Write out the CA configuration file.
-	#
-	$fd = fopen("$store_dir/config/config.php",'w');
-	fwrite($fd, $config_main_txt);
-	fclose($fd);
+        #
+        # Write out the CA configuration file.
+        #
+        $fd = fopen("$store_dir/config/config.php", 'w');
+        fwrite($fd, $config_main_txt);
+        fclose($fd);
 
 
-	#
-	# Create the bootstrap configuration
-	#
-	$config_boot_txt = <<<EOS
+        #
+        # Create the bootstrap configuration
+        #
+        $config_boot_txt = <<<EOS
 <?php
 define('PHPKI_VERSION','$version');
 define('STORE_DIR','$store_dir');
@@ -320,44 +376,69 @@ define('BASE_URL','$base_url');
 ?>
 EOS;
 
-	#
-	# Write out the bootstrap config
-	#
-	$fd = fopen('./config.php','w');
-	fwrite($fd, $config_boot_txt);
-	fclose($fd);
+        #
+        # Write out the bootstrap config
+        #
+        $fd = fopen('./config.php', 'w');
+        fwrite($fd, $config_boot_txt);
+        fclose($fd);
 
 
-	# Re-read the CA config file so the openssl_functions 
-	# can be used to create a CA root certificate.
-	include("$store_dir/config/config.php");
+        # Re-read the CA config file so the openssl_functions
+        # can be used to create a CA root certificate.
+        include("$store_dir/config/config.php");
 
-	#
-	# Now create a temporary openssl.cnf for creating a self-signed
-	# CA root certificate, and create a generic openssl.cnf file 
-	# in the CA home
-	#
-	$config_txt1 = <<< EOS
-HOME			= $config[home_dir]
-RANDFILE		= $config[random]
-dir				= $config[ca_dir]
-certs			= $config[cert_dir]
-crl_dir			= $config[crl_dir]
-database		= $config[index]
-new_certs_dir	= $config[new_certs_dir]
-private_dir		= $config[private_dir]
-serial			= $config[serial]
-certificate		= $config[cacert_pem]
-crl				= $config[cacrl_pem]
-private_key		= $config[cakey]
-crl_extensions	= crl_ext
-default_days	= 365
-default_crl_days= 30
-preserve	 	= no
-default_md	 	= $config[default_md]
+        #
+        # Now create a temporary openssl.cnf for creating a self-signed
+        # CA root certificate, and create a generic openssl.cnf file
+        # in the CA home
+        #
+        
+        $configHOME             = $config['home_dir'];
+        $configRANDFILE         = $config['random'];
+        $configCa_dir           = $config['ca_dir'];
+        $configCert_dir         = $config['cert_dir'];
+        $configCrl_dir          = $config['crl_dir'];
+        $configDatabase         = $config['index'];
+        $configNew_certs_dir    = $config['new_certs_dir'];
+        $configPrivate_dir      = $config['private_dir'];
+        $configSerial           = $config['serial'];
+        $configCacert_pem       = $config['cacert_pem'];
+        $configCacrl_pem        = $config['cacrl_pem'];
+        $configCakey            = $config['cakey'];
+        $configDefault_md       = $config['default_md'];
+        $configBase_url         = $config['base_url'];
+        $configCrl_dist         = $config['crl_distrib'];
+        $configComment_root     = $config['comment_root'];
+        $configPolicy_url       = $config['policy_url'];
+        $configRevoke_url       = $config['revoke_url'];
+        $configComment_email    = $config['comment_email'];
+        $configComment_sign     = $config['comment_sign'];
+        $configComment_srv      = $config['comment_srv'];
+    
+
+        $config_txt1 = "
+
+HOME             = $configHOME 
+RANDFILE         = $configRANDFILE
+dir	             = $configCa_dir
+certs            = $configCert_dir
+crl_dir	         = $configCrl_dir
+database         = $configDatabase
+new_certs_dir    = $configNew_certs_dir
+private_dir      = $configPrivate_dir
+serial           = $configSerial
+certificate      = $configCacert_pem
+crl              = $configCacrl_pem
+private_key      = $configCakey
+crl_extentions	 = crl_ext
+default_days     = 365
+default_crl_days = 30
+preserve         = no
+default_md       = $configDefault_md
 
 [ ca ]
-default_ca		= email_cert
+default_ca    = email_cert
 
 [ root_cert ]
 x509_extensions        = root_ext
@@ -404,10 +485,10 @@ keyUsage               = cRLSign, keyCertSign
 nsCertType             = sslCA, emailCA, objCA
 subjectKeyIdentifier   = hash
 subjectAltName         = email:copy
-crlDistributionPoints  = URI:$config[base_url]$config[crl_distrib]
-nsComment              = $config[comment_root]
+crlDistributionPoints  = URI:$configBase_url$configCrl_dist
+nsComment              = $configComment_root
 #nsCaRevocationUrl     =
-nsCaPolicyUrl          = $config[base_url]$config[policy_url]
+nsCaPolicyUrl          = $configBase_url$configPolicy_url
 
 [ email_ext ]
 basicConstraints       = critical, CA:false
@@ -418,12 +499,12 @@ subjectKeyIdentifier   = hash
 authorityKeyIdentifier = keyid:always, issuer:always
 subjectAltName         = email:copy
 issuerAltName          = issuer:copy
-crlDistributionPoints  = URI:$config[base_url]$config[crl_distrib]
-nsComment              = $config[comment_email]
-nsBaseUrl              = $config[base_url]
-nsRevocationUrl        = $config[revoke_url]
+crlDistributionPoints  = URI:$configBase_url$configCrl_dist
+nsComment              = $configComment_email
+nsBaseUrl              = $configBase_url
+nsRevocationUrl        = $configRevoke_url
 #nsRenewalUrl          =
-nsCaPolicyUrl          = $config[base_url]$config[policy_url]
+nsCaPolicyUrl          = $configBase_url$configPolicy_url
 #nsSslServerName       =
 
 [ email_signing_ext ]
@@ -435,28 +516,28 @@ subjectKeyIdentifier   = hash
 authorityKeyIdentifier = keyid:always, issuer:always
 subjectAltName         = email:copy
 issuerAltName          = issuer:copy
-crlDistributionPoints  = URI:$config[base_url]$config[crl_distrib]
-nsComment              = $config[comment_sign]
-nsBaseUrl              = $config[base_url]
-nsRevocationUrl	       = $config[revoke_url]
+crlDistributionPoints  = URI:$configBase_url$configCrl_dist
+nsComment              = $configComment_sign
+nsBaseUrl              = $configBase_url
+nsRevocationUrl        = $configRevoke_url
 #nsRenewalUrl          =
-nsCaPolicyUrl          = $config[base_url]$config[policy_url]
+nsCaPolicyUrl          = $configBase_url$configPolicy_url
 #nsSslServerName       =
 
 [ server_ext ]
-basicConstraints        = CA:false
+basicConstraints        = critical, CA:false
 keyUsage                = critical, digitalSignature, keyEncipherment
-nsCertType              = critical, server
-extendedKeyUsage        = critical, serverAuth, 1.3.6.1.5.5.7.3.1
+nsCertType              = server
+extendedKeyUsage        = critical, serverAuth
 subjectKeyIdentifier    = hash
 authorityKeyIdentifier  = keyid:always, issuer:always
-subjectAltName          = DNS:$common_name,email:copy
+subjectAltName          = $server_altnames
 issuerAltName           = issuer:copy
-crlDistributionPoints   = URI:$config[base_url]$config[crl_distrib]
-nsComment               = $config[comment_srv]
-nsBaseUrl               = $config[base_url]
-nsRevocationUrl         = $config[revoke_url]
-nsCaPolicyUrl           = $config[base_url]$config[policy_url]
+crlDistributionPoints   = URI:$configBase_url$configCrl_dist
+nsComment               = $configComment_srv
+nsBaseUrl               = $configBase_url
+nsRevocationUrl         = $configRevoke_url
+nsCaPolicyUrl           = $configBase_url$configPolicy_url
 
 [ time_stamping_ext ]
 basicConstraints       = CA:false
@@ -466,11 +547,11 @@ subjectKeyIdentifier   = hash
 authorityKeyIdentifier = keyid:always, issuer:always
 subjectAltName         = DNS:$common_name,email:copy
 issuerAltName          = issuer:copy
-crlDistributionPoints  = URI:$config[base_url]$config[crl_distrib]
+crlDistributionPoints   = URI:$configBase_url$configCrl_dist
 nsComment              = $config[comment_stamp]
-nsBaseUrl              = $config[base_url]
-nsRevocationUrl        = $config[revoke_url]
-nsCaPolicyUrl          = $config[base_url]$config[policy_url]
+nsBaseUrl              = $configBase_url
+nsRevocationUrl        = $configRevoke_url
+nsCaPolicyUrl          = $configBase_url$configPolicy_url
 
 [ vpn_client_ext ]
 basicConstraints        = critical, CA:false
@@ -499,45 +580,45 @@ subjectKeyIdentifier    = hash
 authorityKeyIdentifier  = keyid:always, issuer:always
 subjectAltName          = DNS:$common_name,email:copy
 
+
 [ crl_ext ]
 issuerAltName=issuer:copy
 authorityKeyIdentifier=keyid:always,issuer:always
 
+";
 
-EOS;
-
-	$config_txt2 = <<< EOS
+        $config_txt2 = <<< EOS
 [ req ]
-default_bits		= 2048
-default_keyfile		= privkey.pem
-distinguished_name	= req_name
-string_mask			= nombstr
-req_extensions		= req_ext
+default_bits          = 2048
+default_keyfile       = privkey.pem
+distinguished_name    = req_name
+string_mask           = nombstr
+req_extensions        = req_ext
 
 [ req_name]
-countryName				= Country Name (2 letter code)
-countryName_default		= US
-countryName_min			= 2
-countryName_max			= 2
+countryName           = Country Name (2 letter code)
+countryName_default   = US
+countryName_min       = 2
+countryName_max       = 2
 
-stateOrProvinceName		= State or Province Name (full name)
-stateOrProvinceName_default	= 
+stateOrProvinceName   = State or Province Name (full name)
+stateOrProvinceName_default = 
 
-localityName			= Locality Name (eg, city)
-localityName_default		= 
+localityName          = Locality Name (eg, city)
+localityName_default  = 
 
-0.organizationName		= Organization Name (eg, company)
-0.organizationName_default	=
+0.organizationName    = Organization Name (eg, company)
+0.organizationName_default  =
 
-1.organizationName		= Second Organization Name (eg, company)
-1.organizationName_default	= 
+1.organizationName    = Second Organization Name (eg, company)
+1.organizationName_default  = 
 
-organizationalUnitName		= Organizational Unit Name (eg, section)
-organizationalUnitName_default	= 
+organizationalUnitName    = Organizational Unit Name (eg, section)
+organizationalUnitName_default  = 
 
-commonName			= Common Name (eg, YOUR name)
+commonName            = Common Name (eg, YOUR name)
 
-emailAddress			= Email Address or Web URL
+emailAddress          = Email Address or Web URL
 
 [ req_ext ]
 basicConstraints = critical, CA:false
@@ -545,23 +626,31 @@ basicConstraints = critical, CA:false
 
 EOS;
 
-	$config_txt3 = <<< EOS
+        $configCountry       = $config['country'];
+        $configProvince      = $config['province'];
+        $configLocality      = $config['locality'];
+        $configOrganization  = $config['organization'];
+        $configUnit          = $config['unit'];
+        $configCommon_name   = $config['common_name'];
+        $configEmailaddress  = $config['contact'];
+
+        $config_txt3 = <<< EOS
 [ req ]
-default_bits		= 2048
-default_keyfile		= privkey.pem
-distinguished_name	= req_name
-string_mask			= nombstr
-req_extensions		= req_ext
-prompt				= no
+default_bits    = 2048
+default_keyfile   = privkey.pem
+distinguished_name  = req_name
+string_mask     = nombstr
+req_extensions    = req_ext
+prompt        = no
 
 [ req_name ]
-C		= $config[country]
-ST		= $config[province]
-L		= $config[locality]
-O		= $config[organization]
-OU		= $config[unit]
-CN		= $config[common_name]
-emailAddress	= $config[contact]
+C             = $configCountry
+ST            = $configProvince
+L             = $configLocality
+O             = $configOrganization
+OU            = $configUnit
+CN            = $configCommon_name
+emailAddress  = $configEmailaddress
 
 [ req_ext ]
 basicConstraints = critical, CA:true
@@ -569,163 +658,217 @@ basicConstraints = critical, CA:true
 
 EOS;
 
-	#
-	# Write the permanent OpenSSL config
-	#
-	$fd = fopen($config['openssl_cnf'],'w');
-	fwrite($fd, $config_txt1 . $config_txt2);
-	fclose($fd);
+        #
+        # Write the permanent OpenSSL config
+        #
+        $fd = fopen($config['openssl_cnf'], 'w');
+        fwrite($fd, $config_txt1 . $config_txt2);
+        fclose($fd);
 
-	#
-	# Write the temporary OpenSSL config
-	#
-	$tmp_cnf = "$config[home_dir]/tmp/openssl.cnf";
-	$fd = fopen($tmp_cnf,'w');
-	fwrite($fd, $config_txt1 . $config_txt3);
-	fclose($fd);
+        #
+        # Write the temporary OpenSSL config
+        #
+        $configHome_dir = $config['home_dir'];
+        $tmp_cnf = "$configHome_dir/tmp/openssl.cnf";
+        $fd = fopen($tmp_cnf, 'w');
+        fwrite($fd, $config_txt1 . $config_txt3);
+        fclose($fd);
 
-	#
-	# Intialize index.txt and serial files
-	#
-	$fd = fopen($config['index'],'w');
-	fwrite($fd, "");
-	fclose($fd);
-	#
-	$fd = fopen($config['serial'],'w');
-	fwrite($fd, "100001");
-	fclose($fd);
+        #
+        # Intialize index.txt and serial files
+        #
+        $fd = fopen($config['index'], 'w');
+        fwrite($fd, "");
+        fclose($fd);
+        #
+        $fd = fopen($config['serial'], 'w');
+        fwrite($fd, "100001");
+        fclose($fd);
 
-	#
-	# Convert expiry years to approximate days.
-	#
-	$days = $config['expiry'] * 365.25;
+        #
+        # Convert expiry years to approximate days.
+        #
+        $days = $config['expiry'] * 365.25;
 
-
-	#
-	# Create a new self-signed CA certificate in PEM format.
-	#
-	print '<strong>Creating root certificate...</strong><br>';
-	flush();
-	// .rnd created here
-	exec(REQ . " -x509 -config $tmp_cnf -extensions root_ext -newkey rsa:$keysize -keyout $config[cakey] -out $config[cacert_pem] -passout pass:'$config[ca_pwd]' -days $days 2>&1");
-
-	# **** DISABLED *****
-	# It appears that both IE and Netscape accept PEM formatted root certificates
-	#
-	# Create a copy of the CA certificate in DER format.
-	#
-	#exec(X509 . " -in ca/$config[cacert_pem] -inform PEM -out ca/$config[cacert_der] -outform DER 2>&1");
-
-	#
-	# Generate the initial CRL.
-	#
-	print '<strong>Generating certificate revocation list...</strong><br>';
-	flush();
-	exec(CA . " -gencrl -config $config[openssl_cnf] -out $config[cacrl_pem] -passin pass:'$config[ca_pwd]'");
-
-	# Make a copy of the CRL in DER format.
-	#
-	exec(CRL . " -in $config[cacrl_pem] -out $config[cacrl_der] -inform PEM -outform DER");
-
-	#
-	# Clean up.
-	#
-	if (! unlink("$store_dir/tmp/openssl.cnf")) print "Can't unlink $store_dir/tmp/openssl.cnf";
-
-	#
-	# Create dhparam files for OpenVPN and others.
-	#
-	#print '<p><strong>Creating 1024 bit Diffie-Hellman parameters used by OpenVPN.<br>';
-	#print "Saving to $config[private_dir]/dhparam1024.pem.</strong><br>";
-	#$cmd = "openssl dhparam -rand '$config[random]' -out '$config[private_dir]/dhparam1024.pem' 1024";
-	#print $cmd.'<br>';
-	#flush();
-	#flush_exec($cmd,100);
-
-    #print "Please ignore warnings about \"unable to write 'random state\' <br><br>";
-
-	// This method works but still errors in logs
-    // exec(DH . "-rand '$config[random]' -out '$config[private_dir]/dhparam1024.pem' 1024");
-	// exec(DH . " -out '$config[private_dir]/dhparam1024.pem' 1024");
-	
-	print '<p><strong>Creating 2048 bit Diffie-Hellman parameters used by OpenVPN.<br>';
-	print "Saving to $store_dir/dhparam2048.pem.</strong><br>";
-	$cmd = "openssl dhparam -rand '$config[random]' -out '$config[private_dir]/dhparam2048.pem' 2048";
-	print $cmd.'<br>';
-	flush();
-	flush_exec($cmd,200);
-	
-	print "Please ignore warnings about \"unable to write 'random state' <br><br>";
-	
-	#
-    # Create a TLS auth key for OpenVPN if openvpn is installed
-    #
-    $command = 'which openvpn';
-	$command = escapeshellcmd($command);
-	
-    if (system ($command) == '/usr/sbin/openvpn') {
-	
-	print '<p><strong>Creating a TLS authentication key used by OpenVPN.<br>';
-    print "Saving to $store_dir/takey.pem.</strong><br>";
-	$cmd = "openvpn --genkey --secret '$config[private_dir]/takey.pem'";
-	print $cmd.'<br>';
+        #
+        # Create a new self-signed CA certificate in PEM format.
+        #
+        print '<strong>Creating root certificate...</strong><br>';
         flush();
-        flush_exec($cmd);
-	} else {
-		echo "openvpn is required to generate a takey.pem<br>";
-		echo "You can create one later like this:<br>";
-		echo "openvpn --genkey --secret". $config['private_dir'] . "/takey.pem<br>";
-	}
+        
+        $configOpenssl_cnf = $config['openssl_cnf'];
+        $configPrivate_dir = $config['private_dir'];
+        $configCacert_pem = $config['cacert_pem'];
+        $configCa_pwd = $config['ca_pwd'];
+        $configCakey = $config['cakey'];
+        $configRandom = $config['random'];
+        $configCacrl_der = $config['cacrl_der'];
+        $configCacrl_pem = $config['cacrl_pem'];
+        
+        // .rnd created here
+        exec(REQ . " -x509 -config $tmp_cnf -extensions root_ext -newkey rsa:$keysize -keyout $configCakey -out $configCacert_pem -passout pass:'$configCa_pwd' -days $days 2>&1");
+
+        # **** DISABLED *****
+        # It appears that both IE and Netscape accept PEM formatted root certificates
+        #
+        # Create a copy of the CA certificate in DER format.
+        #
+        #exec(X509 . " -in ca/$config[cacert_pem] -inform PEM -out ca/$config[cacert_der] -outform DER 2>&1");
+
+        #
+        # Generate the initial CRL.
+        #
+        print '<strong>Generating certificate revocation list...</strong><br>';
+        flush();
+        exec(CA . " -gencrl -config $configOpenssl_cnf -out $configCacrl_pem -passin pass:'$configCa_pwd'");
+
+        # Make a copy of the CRL in DER format.
+        #
+        exec(CRL . " -in $configCacrl_pem -out $configCarcrl_der -inform PEM -outform DER");
+
+        #
+        # Clean up.
+        #
+        if (! unlink("$store_dir/tmp/openssl.cnf")) {
+            print "Can't unlink $store_dir/tmp/openssl.cnf";
+        }
+
+        #
+        # Create dhparam files for OpenVPN and others.
+        #
+        #print '<p><strong>Creating 1024 bit Diffie-Hellman parameters used by OpenVPN.<br>';
+        #print "Saving to $config[private_dir]/dhparam1024.pem.</strong><br>";
+        #$cmd = "openssl dhparam -rand '$config[random]' -out '$config[private_dir]/dhparam1024.pem' 1024";
+        #print $cmd.'<br>';
+        #flush();
+        #flush_exec($cmd,100);
+
+        #print "Please ignore warnings about \"unable to write 'random state\' <br><br>";
+
+        // This method works but still errors in logs
+        // exec(DH . "-rand '$config[random]' -out '$config[private_dir]/dhparam1024.pem' 1024");
+        // exec(DH . " -out '$config[private_dir]/dhparam1024.pem' 1024");
+    
+        print '<p><strong>Creating 2048 bit Diffie-Hellman parameters used by OpenVPN.<br>';
+        print "Saving to $store_dir/dhparam2048.pem.</strong><br>";
+        $cmd = "openssl dhparam -rand '$configRandom' -out '$configPrivate_dir/dhparam2048.pem' 2048";
+        print $cmd.'<br>';
+        flush();
+        flush_exec($cmd, 200);
+    
+        print "Please ignore warnings about \"unable to write 'random state' <br><br>";
+    
+        #
+        # Create a TLS auth key for OpenVPN if openvpn is installed
+        #
+        $command = 'which openvpn';
+        $command = escapeshellcmd($command);
+    
+        if (system($command) == '/usr/sbin/openvpn') {
+            print '<p><strong>Creating a TLS authentication key used by OpenVPN.<br>';
+            print "Saving to $store_dir/takey.pem.</strong><br>";
+            $cmd = "openvpn --genkey --secret '$configPrivate_dir/takey.pem'";
+            print $cmd.'<br>';
+            flush();
+            flush_exec($cmd);
+        } else {
+            echo "openvpn is required to generate a takey.pem<br>";
+            echo "You can create one later like this:<br>";
+            echo "openvpn --genkey --secret". $configPrivate_dir . "/takey.pem<br>";
+        }
 
 
-	
-	#
-	# Step aside and let the users in (create index.php files).  
-	#
-	if (! unlink('index.php')) print "Can't unlink index.php";
-	if (! unlink('setup.php')) print "Can't unlink setup.php";;
-	if (! unlink('ca/index.php')) print "Can't unlink ca/index.php";
-	if (! symlink('main.php','index.php')) print "Can't symlink main.php";
-	if (! symlink('main.php','ca/index.php')) print "Can't symlink ca/main.php";
+    
+        #
+        # Step aside and let the users in (create index.php files).
+        #
+        if (! unlink('index.php')) {
+            print "Can't unlink index.php";
+        }
+        if (! unlink('setup.php')) {
+            print "Can't unlink setup.php";
+        };
+        if (! unlink('ca/index.php')) {
+            print "Can't unlink ca/index.php";
+        }
+        if (! symlink('main.php', 'index.php')) {
+            print "Can't symlink main.php";
+        }
+        if (! symlink('main.php', 'ca/index.php')) {
+            print "Can't symlink ca/main.php";
+        }
 
-	?>
-	<center>
-	<h2>Setup is complete. Your CA root certificate as been created.</h2>
-	<?php
-	if (! getOSInformation()) {
-	print '<h3><font color=red>SECURITY WARNING!&nbsp;&nbsp; Be sure to run the <cite>secure.sh</cite> shell script as the <strong>root</strong> user.</font></h3>';
-	}
-	?>
-	<p><br><br>
-	<form action=index.php>
-	<input type=submit name=submit value="Proceed To The PHPki Main Menu">
-	</form>
-	</center>
-	<?php
-	printFooter();
-	break;
+        ?>
+        <center>
+        <h2>Setup is complete. Your CA root certificate as been created.</h2>
+        <?php
+        if (! getOSInformation()) {
+            print '<h3><font color=red>SECURITY WARNING!&nbsp;&nbsp; Be sure to run the <cite>secure.sh</cite> shell script as the <strong>root</strong> user.</font></h3>';
+        }
+        ?>
+        <p><br><br>
+        <form action=index.php>
+        <input type=submit name=submit value="Proceed To The PHPki Main Menu">
+        </form>
+        </center>
+        <?php
+        printFooter();
+        break;
 
-default:
-	if (! $country) $country = $config['country'];
-	if (! $province) $province = $config['province'];
-	if (! $locality) $locality = $config['locality'];
-	if (! $organization) $organization = $config['organization'];
-	if (! $contact) $contact = $config['contact'];
-	if (! $expiry) $expiry = $config['expiry'];
-	if (! $expiry) $expiry = 10;
-	if (! $keysize) $keysize = $config['keysize'];
-	if (! $keysize) $keysize = 2048;
-	if (! $passwd) $passwd = $config['ca_pwd'];
-	if (! $passwdv) $passwdv = $passwd;
+    default:
+        if (! $country) {
+            $country = $config['country'];
+        }
+        if (! $province) {
+            $province = $config['province'];
+        }
+        if (! $locality) {
+            $locality = $config['locality'];
+        }
+        if (! $organization) {
+            $organization = $config['organization'];
+        }
+        if (! $contact) {
+            $contact = $config['contact'];
+        }
+        if (! $expiry) {
+            $expiry = $config['expiry'];
+        }
+        if (! $expiry) {
+            $expiry = 10;
+        }
+        if (! $keysize) {
+            $keysize = $config['keysize'];
+        }
+        if (! $keysize) {
+            $keysize = 2048;
+        }
+        if (! $passwd) {
+            $passwd = $config['ca_pwd'];
+        }
+        if (! $passwdv) {
+            $passwdv = $passwd;
+        }
 
-	if (! $unit) $unit = $config['unit'];
-	if (! $unit) $unit = "Certificate Authority";
+        if (! $unit) {
+            $unit = $config['unit'];
+        }
+        if (! $unit) {
+            $unit = "Certificate Authority";
+        }
 
-	if (! $common_name) $common_name = $config['common_name'];
-	if (! $common_name) $common_name = "PHPki Certificate Authority";
+        if (! $common_name) {
+            $common_name = $config['common_name'];
+        }
+        if (! $common_name) {
+            $common_name = "PHPki Certificate Authority";
+        }
 
-	if (! $getting_help) $getting_help = $config['getting_help'];
-	if (! $getting_help) $getting_help = '
+        if (! $getting_help) {
+            $getting_help = $config['getting_help'];
+        }
+        if (! $getting_help) {
+            $getting_help = '
 <b>Contact:</b><br>
 First-Name Last-Name<br>
 Company/Organization Name<br>
@@ -735,322 +878,360 @@ City, State, ZipCode<br>
 <br>
 Phone: (000) 000-0000<br>
 E-mail: <a href=mailto:someone@somewhere.com>someone@somewhere.com</a>&nbsp;&nbsp;&nbsp;<i><b>E-mail is preferred.</b></i><br>';
-
-	if (! $store_dir) $store_dir = dirname($_SERVER['DOCUMENT_ROOT']).'/phpki-store';
-
-	if (! $base_url) $base_url = $config['base_url'];
-	if (! $base_url) $base_url = 'http://www.somewhere.com/phpki/';
-
-	if (! $crl_distrib) $crl_distrib = 'index.php?stage=dl_crl';
-	if (! $revoke_url) $revoke_url = 'ns_revoke_query.php?';
-	if (! $policy_url) $policy_url = 'policy.html';
-
-	if (! $comment_root) $comment_root = 'PHPki/OpenSSL Generated Root Certificate Authority';
-	if (! $comment_email) $comment_email = 'PHPki/OpenSSL Generated Personal Certificate';
-	if (! $comment_sign) $comment_sign = 'PHPki/OpenSSL Generated Personal Certificate';
-	if (! $comment_srv) $comment_srv = 'PHPki/OpenSSL Generated Secure Server Certificate';
-	if (! $comment_stamp) $comment_stamp = 'PHPki/OpenSSL Generated Time Stamping Certificate';
-
-	if (! $ca_prefix) $ca_prefix = $config['ca_prefix'];
-
-	if (! $openssl_bin) $openssl_bin = $config['openssl_bin'];
-	if (! $openssl_bin) $openssl_bin = '/usr/bin/openssl';
-
-	if (! $passwd_file) $passwd_file = $config['passwd_file'];
-	if (! $passwd_file)  $passwd_file = dirname($_SERVER['DOCUMENT_ROOT']).'/phpkipasswd';
-	
-	if (! $header_title) $header_title = $config['header_title'];
-	if (! $header_title) $header_title = 'Certificate Authority';
-
-	printHeader('setup');
-	?>
-	<form action="<?php echo $PHP_SELF?>" method="post">
-	<center><h2>Certificate Authority Initial Setup</h2></center>
-	<table width=99%>
-	<tr>
-	<th colspan=2><h3>Root Certificate Data</h3></th>
-	</tr>
-
-	<tr>
-	<td width=35%><strong>Organization</strong> <font color=red>*</font></td>
-	<td><input type=text name=organization value="<?php echo htvar($organization)?>" maxlength=60 size=50></td>
-	</tr>
-
-	<tr>
-	<td><strong>Department/Unit</strong> <font color=red>*</font></td>
-	<td><input type=text name=unit value="<?php echo htvar($unit)?>" maxlength=60 size=30></td>
-	</tr>
-
-	<tr>
-	<td>
-	<strong>Common Name</strong> <font color=red>*</font>
-	This is embeded in certificates, and is most often displayed in
-	e-mail clients as the <cite>Issued By:</cite> text.  This is usually
-	the full name of your certificate authority (i.e. ACME Certificate Authority).
-	</td>
-	<td><input type=text name=common_name value="<?php echo htvar($common_name)?>" maxlength=60 size=60></td>
-	</tr>
-
-	<tr>
-	<td>
-	<strong>Technical Contact E-mail Address</strong> <font color=red>*</font><br>
-	Enter an e-mail address where users should send correspondence
-	regarding your certificate authority and the certificates you issue.
-	</td>
-	
-	<td><input type=text name=contact value="<?php echo htvar($contact)?>" maxlength=60 size=30></td>
-	</tr>
-
-	<tr>
-	<td><strong>Locality</strong> <font color=red>*</font></td>
-	<td><input type=text name=locality value="<?php echo htvar($locality)?>" maxlength=60 size=30></td>
-	</tr>
-
-	<tr>
-	<td><strong>State/Province</strong> <font color=red>*</font></td>
-	<td><input type=text name=province value="<?php echo htvar($province)?>" maxlength=60 size=20></td>
-	</tr>
-
-	<tr>
-	<td><strong>Country Code ISO 3166 - 2 Characters</strong> <font color=red>*</font></td>
-	<td><input type=text name=country value="<?php echo htvar($country)?>" maxlength=2 size=2></td>
-	</tr>
-
-	<tr>
-	<td>
-	<strong>Password</strong> <font color=red>*</font><br>
-	This password will be used to protect your root certificate private
-	key.<br/>Can't contain single quote ! <strong><font color=red>Do not lose or forget this password.</font></strong>
-	</td>
-	<td><input type=password name=passwd value="<?php echo htvar($passwd)?>" size=30>&nbsp;&nbsp; Again <input type=password name=passwdv value="<?php echo htvar($passwdv)?>" size=30></td>
-	</tr>
-
-	<tr>
-	<td>
-	<strong>Certificate Life</strong> <font color=red>*</font><br>
-	Enter the number of years you wish your root certificate to be valid.
-	</td>
-	<td><select name=expiry>
-
-	<?php
-        for ( $i = 5 ; $i <= 15 ; $i+=5 ) {
-            print "<option value=$i " . ($expiry == $i ? "selected='selected'" : "") . " >$i Years</option>\n" ;
         }
-	?>
 
-	</select></td>
-	</tr>
-
-	<tr>
-	<td>
-	<strong>Key Size</strong> <font color=red>*</font><br>
-	Enter the size of your certificate key. Recommend 2048+
-	</td>
-	<td><select name=keysize>
-
-	<?php
-        for ( $i = 1024 ; $i <= 4096 ; $i+=512 ) {
-            print "<option value=$i " . ($keysize == $i ? "selected='selected'" : "") . ">$i bits</option>\n" ;
+        if (! $store_dir) {
+            $store_dir = dirname($_SERVER['DOCUMENT_ROOT']).'/phpki-store';
         }
-	?>
 
-	</select></td>
-	</tr>
+        if (! $base_url) {
+            $base_url = $config['base_url'];
+        }
+        if (! $base_url) {
+            $base_url = 'http://www.somewhere.com/phpki/';
+        }
 
-	<tr>
-	<td>
-	<strong>Certificate Authority Base URL</strong><br>
-	Enter the public Web address where your Certificate Authority will
-	reside.  The address should end with a trailing slash (/) character.
-	This address will be embeded in all certficates issued
-	by your CA, for informational purposes.
-	</td>
-	<td>
-	<input type=text name=base_url value="<?php echo htvar($base_url)?>" size=50>
-	</td>
-	</tr>
+        if (! $crl_distrib) {
+            $crl_distrib = 'index.php?stage=dl_crl';
+        }
+        if (! $revoke_url) {
+            $revoke_url = 'ns_revoke_query.php?';
+        }
+        if (! $policy_url) {
+            $policy_url = 'policy.html';
+        }
 
-	<tr>
-	<td>
-	<strong>Certificate Authority CRL Distribution Points</strong><br>
-	 Provide the public URL where Certificate Revocation List (CRL) of
-	 your CA will reside. This path is relative to Base URL above.
-	 You may leave it by default if your clients have direct access to PHPki.
-	</td>
-	<td>
-	<input type=text name=crl_distrib value="<?php echo htvar($crl_distrib)?>" size=50>
-	</td>
-	</tr>
+        if (! $comment_root) {
+            $comment_root = 'PHPki/OpenSSL Generated Root Certificate Authority';
+        }
+        if (! $comment_email) {
+            $comment_email = 'PHPki/OpenSSL Generated Personal Certificate';
+        }
+        if (! $comment_sign) {
+            $comment_sign = 'PHPki/OpenSSL Generated Personal Certificate';
+        }
+        if (! $comment_srv) {
+            $comment_srv = 'PHPki/OpenSSL Generated Secure Server Certificate';
+        }
+        if (! $comment_stamp) {
+            $comment_stamp = 'PHPki/OpenSSL Generated Time Stamping Certificate';
+        }
 
-	<tr>
-	<td>
-	<strong>Certificate Authority Revocation Check URL</strong><br>
-	 Provide the public URL where clients of your CA can check if the requested
-	 certificate has been revoked. This path is relative to Base URL above.
-	 You may leave it by default if your clients have direct access to PHPki.
-	</td>
-	<td>
-	<input type=text name=revoke_url value="<?php echo htvar($revoke_url)?>" size=50>
-	</td>
-	</tr>
+        if (! $ca_prefix) {
+            $ca_prefix = $config['ca_prefix'];
+        }
 
-	<tr>
-	<td>
-	<strong>Certificate Authority Policy URL</strong><br>
-	 Provide the public URL where your CA policy will reside.
-	 This path is relative to Base URL above.
-	 You may leave it by default or adjust to your environment.
-	</td>
-	<td>
-	<input type=text name=policy_url value="<?php echo htvar($policy_url)?>" size=50>
-	</td>
-	</tr>
+        if (! $openssl_bin) {
+            $openssl_bin = $config['openssl_bin'];
+        }
+        if (! $openssl_bin) {
+            $openssl_bin = '/usr/bin/openssl';
+        }
 
-	<tr>
-	<td>
-	<strong>Root Certificate Comment</strong><br>
-	 Root certificate Comment attribute. You may change it to something
-	 or use the default value set by PHPki.
-	</td>
-	<td>
-	<input type=text name=comment_root value="<?php echo htvar($comment_root)?>" size=50>
-	</td>
-	</tr>
+        if (! $passwd_file) {
+            $passwd_file = $config['passwd_file'];
+        }
+        if (! $passwd_file) {
+            $passwd_file = dirname($_SERVER['DOCUMENT_ROOT']).'/phpkipasswd';
+        }
+    
+        if (! $header_title) {
+            $header_title = $config['header_title'];
+        }
+        if (! $header_title) {
+            $header_title = 'Certificate Authority';
+        }
 
-	<tr>
-	<td>
-	<strong>Email Certificate Comment</strong><br>
-	 Email certificate Comment attribute. You may change it to something
-	 or use the default value set by PHPki.
-	</td>
-	<td>
-	<input type=text name=comment_email value="<?php echo htvar($comment_email)?>" size=50>
-	</td>
-	</tr>
+        printHeader('setup');
+        ?>
+        <form action="<?php echo $PHP_SELF?>" method="post">
+    <center><h2>Certificate Authority Initial Setup</h2></center>
+    <table width=99%>
+    <tr>
+    <th colspan=2><h3>Root Certificate Data</h3></th>
+    </tr>
 
-	<tr>
-	<td>
-	<strong>Email/Signing Certificate Comment</strong><br>
-	 Email and signing certificate Comment attribute. You may change it
-	 to something or use the default value set by PHPki.
-	</td>
-	<td>
-	<input type=text name=comment_sign value="<?php echo htvar($comment_sign)?>" size=50>
-	</td>
-	</tr>
+    <tr>
+    <td width=35%><strong>Organization</strong> <font color=red>*</font></td>
+    <td><input type=text name=organization value="<?php echo htvar($organization)?>" maxlength=60 size=50></td>
+    </tr>
 
-	<tr>
-	<td>
-	<strong>SSL Server Certificate Comment</strong><br>
-	 SSL server certificate Comment attribute. You may change it to something
-	 or use the default value set by PHPki.
-	</td>
-	<td>
-	<input type=text name=comment_srv value="<?php echo htvar($comment_srv)?>" size=50>
-	</td>
-	</tr>
+    <tr>
+    <td><strong>Department/Unit</strong> <font color=red>*</font></td>
+    <td><input type=text name=unit value="<?php echo htvar($unit)?>" maxlength=60 size=30></td>
+    </tr>
 
-	<tr>
-	<td>
-	<strong>Time Stamping Certificate Comment</strong><br>
-	 Time stamping certificate Comment attribute. You may change it
-	 to something or use the default value set by PHPki.
-	</td>
-	<td>
-	<input type=text name=comment_stamp value="<?php echo htvar($comment_stamp)?>" size=50>
-	</td>
-	</tr>
+    <tr>
+    <td>
+    <strong>Common Name</strong> <font color=red>*</font>
+    This is embeded in certificates, and is most often displayed in
+    e-mail clients as the <cite>Issued By:</cite> text.  This is usually
+    the full name of your certificate authority (i.e. ACME Certificate Authority).
+    </td>
+    <td><input type=text name=common_name value="<?php echo htvar($common_name)?>" maxlength=60 size=60></td>
+    </tr>
 
-	</table>
+    <tr>
+    <td>
+    <strong>Technical Contact E-mail Address</strong> <font color=red>*</font><br>
+    Enter an e-mail address where users should send correspondence
+    regarding your certificate authority and the certificates you issue.
+    </td>
+    
+    <td><input type=text name=contact value="<?php echo htvar($contact)?>" maxlength=60 size=30></td>
+    </tr>
 
-	<p>
-	<table width=99%>
-	<tr>
-	<th colspan=2><h3>Configuration Options</h3></th>
-	</tr>
+    <tr>
+    <td><strong>Locality</strong> <font color=red>*</font></td>
+    <td><input type=text name=locality value="<?php echo htvar($locality)?>" maxlength=60 size=30></td>
+    </tr>
 
-	<tr>
-	<td width=35%>
-	<strong>Storage Directory <font color=red>*</font></strong><br>
-	Enter the location where PHPki will store its files.  This should be a directory where
-	the web server has full read/write access (chown <?php echo $uname?> ; chmod 700), and is preferably 
-	outside of DOCUMENT_ROOT (<?php echo $_SERVER['DOCUMENT_ROOT']?>).  You may have to manually create the directory before completing this form.
-	</td>
-	<td>
-	<input type=text name=store_dir value="<?php echo htvar($store_dir)?>" size=35>
-	</td>
-	</tr>
+    <tr>
+    <td><strong>State/Province</strong> <font color=red>*</font></td>
+    <td><input type=text name=province value="<?php echo htvar($province)?>" maxlength=60 size=20></td>
+    </tr>
 
-	<tr>
-	<td width=35%>
-	<strong>Location of OpenSSL Executable <font color=red>*</font></strong><br>
-	Enter the location of your OpenSSL binary.  The default is usually ok.
-	</td>
-	<td>
-	<input type=text name=openssl_bin value="<?php echo htvar($openssl_bin)?>" size=35>
-	</td>
-	</tr>
+    <tr>
+    <td><strong>Country Code ISO 3166 - 2 Characters</strong> <font color=red>*</font></td>
+    <td><input type=text name=country value="<?php echo htvar($country)?>" maxlength=2 size=2></td>
+    </tr>
 
-	<tr>
-	<td width=35%>
-	<strong>Location of HTTP password file <font color=red>*</font></strong><br>
-	Enter the location of your PHPki user password file.  The default is usually ok.
-	</td>
-	<td>
-	<input type=text name=passwd_file value="<?php echo htvar($passwd_file)?>" size=35>
-	</td>
-	</tr>
+    <tr>
+    <td>
+    <strong>Password</strong> <font color=red>*</font><br>
+    This password will be used to protect your root certificate private
+    key.<br/>Can't contain single quote ! <strong><font color=red>Do not lose or forget this password.</font></strong>
+    </td>
+    <td><input type=password name=passwd value="<?php echo htvar($passwd)?>" size=30>&nbsp;&nbsp; Again <input type=password name=passwdv value="<?php echo htvar($passwdv)?>" size=30></td>
+    </tr>
 
-	<tr>
-	<td>
-	<strong>File Upload Prefix</strong><br>
-	This is an optional prefix which will be added to root certificate
-	and certificate revocation list file uploads.  Normally the root 
-	certificate is uploaded as caroot.crt.  With a prefix like
-	<cite style="white-space: nowrap">"acme_"</cite>, the root certificate would be uploaded as
-	<cite>"acme_caroot.crt"</cite>.
-	</td>
-	<td>
-	<input type=text name=ca_prefix value="<?php echo htvar($ca_prefix)?>" maxlength=10 size=10>
-	</td>
-	</tr>
+    <tr>
+    <td>
+    <strong>Certificate Life</strong> <font color=red>*</font><br>
+    Enter the number of years you wish your root certificate to be valid.
+    </td>
+    <td><select name=expiry>
 
-	<tr>
-	<td>
-	<strong>Page Header Title</strong><br>
-	This title will be displayed superimposed over the PHPki logo at the
-	top of every page.
-	</td>
-	<td>
-	<input type=text name=header_title value="<?php echo htvar($header_title)?>" maxlength=40 size=40>
-	</td>
-	</tr>
+    <?php
+    for ($i = 5; $i <= 15; $i+=5) {
+        print "<option value=$i " . ($expiry == $i ? "selected='selected'" : "") . " >$i Years</option>\n" ;
+    }
+    ?>
 
-	<tr>
-	<td>
-	<strong>Help Document Contact Info</strong><br>
-	This text will be inserted into the online help document
-	under the "Getting Additional Help" section.  Include full
-	contact info for the convenience of your users.  Use HTML
-	tags to improve presentation.
-	</td>
-	<td>
-	<textarea name=getting_help cols=50 rows=15><?php echo htvar($getting_help)?></textarea>
-	</td>
-	</tr>
-	</table>
-	<font color=red>* Required field</font>
+    </select></td>
+    </tr>
 
-	<p>
-	<center><input type=submit name=submit value=Submit></center></td>
-	<input type=hidden name=stage value='validate'>
-	</form>
+    <tr>
+    <td>
+    <strong>Key Size</strong> <font color=red>*</font><br>
+    Enter the size of your certificate key. Recommend 2048+
+    </td>
+    <td><select name=keysize>
 
-	<?php
-	printFooter();
-	break;
+    <?php
+    for ($i = 1024; $i <= 4096; $i+=512) {
+        print "<option value=$i " . ($keysize == $i ? "selected='selected'" : "") . ">$i bits</option>\n" ;
+    }
+    ?>
+
+    </select></td>
+    </tr>
+
+    <tr>
+    <td>
+    <strong>Certificate Authority Base URL</strong><br>
+    Enter the public Web address where your Certificate Authority will
+    reside.  The address should end with a trailing slash (/) character.
+    This address will be embeded in all certficates issued
+    by your CA, for informational purposes.
+    </td>
+    <td>
+    <input type=text name=base_url value="<?php echo htvar($base_url)?>" size=50>
+    </td>
+    </tr>
+
+    <tr>
+    <td>
+    <strong>Certificate Authority CRL Distribution Points</strong><br>
+     Provide the public URL where Certificate Revocation List (CRL) of
+     your CA will reside. This path is relative to Base URL above.
+     You may leave it by default if your clients have direct access to PHPki.
+    </td>
+    <td>
+    <input type=text name=crl_distrib value="<?php echo htvar($crl_distrib)?>" size=50>
+    </td>
+    </tr>
+
+    <tr>
+    <td>
+    <strong>Certificate Authority Revocation Check URL</strong><br>
+     Provide the public URL where clients of your CA can check if the requested
+     certificate has been revoked. This path is relative to Base URL above.
+     You may leave it by default if your clients have direct access to PHPki.
+    </td>
+    <td>
+    <input type=text name=revoke_url value="<?php echo htvar($revoke_url)?>" size=50>
+    </td>
+    </tr>
+
+    <tr>
+    <td>
+    <strong>Certificate Authority Policy URL</strong><br>
+     Provide the public URL where your CA policy will reside.
+     This path is relative to Base URL above.
+     You may leave it by default or adjust to your environment.
+    </td>
+    <td>
+    <input type=text name=policy_url value="<?php echo htvar($policy_url)?>" size=50>
+    </td>
+    </tr>
+
+    <tr>
+    <td>
+    <strong>Root Certificate Comment</strong><br>
+     Root certificate Comment attribute. You may change it to something
+     or use the default value set by PHPki.
+    </td>
+    <td>
+    <input type=text name=comment_root value="<?php echo htvar($comment_root)?>" size=50>
+    </td>
+    </tr>
+
+    <tr>
+    <td>
+    <strong>Email Certificate Comment</strong><br>
+     Email certificate Comment attribute. You may change it to something
+     or use the default value set by PHPki.
+    </td>
+    <td>
+    <input type=text name=comment_email value="<?php echo htvar($comment_email)?>" size=50>
+    </td>
+    </tr>
+
+    <tr>
+    <td>
+    <strong>Email/Signing Certificate Comment</strong><br>
+     Email and signing certificate Comment attribute. You may change it
+     to something or use the default value set by PHPki.
+    </td>
+    <td>
+    <input type=text name=comment_sign value="<?php echo htvar($comment_sign)?>" size=50>
+    </td>
+    </tr>
+
+    <tr>
+    <td>
+    <strong>SSL Server Certificate Comment</strong><br>
+     SSL server certificate Comment attribute. You may change it to something
+     or use the default value set by PHPki.
+    </td>
+    <td>
+    <input type=text name=comment_srv value="<?php echo htvar($comment_srv)?>" size=50>
+    </td>
+    </tr>
+
+    <tr>
+    <td>
+    <strong>Time Stamping Certificate Comment</strong><br>
+     Time stamping certificate Comment attribute. You may change it
+     to something or use the default value set by PHPki.
+    </td>
+    <td>
+    <input type=text name=comment_stamp value="<?php echo htvar($comment_stamp)?>" size=50>
+    </td>
+    </tr>
+
+    </table>
+
+    <p>
+    <table width=99%>
+    <tr>
+    <th colspan=2><h3>Configuration Options</h3></th>
+    </tr>
+
+    <tr>
+    <td width=35%>
+    <strong>Storage Directory <font color=red>*</font></strong><br>
+    Enter the location where PHPki will store its files.  This should be a directory where
+    the web server has full read/write access (chown <?php echo $uname?> ; chmod 700), and is preferably 
+    outside of DOCUMENT_ROOT (<?php echo $_SERVER['DOCUMENT_ROOT']?>).  You may have to manually create the directory before completing this form.
+    </td>
+    <td>
+    <input type=text name=store_dir value="<?php echo htvar($store_dir)?>" size=35>
+    </td>
+    </tr>
+
+    <tr>
+    <td width=35%>
+    <strong>Location of OpenSSL Executable <font color=red>*</font></strong><br>
+    Enter the location of your OpenSSL binary.  The default is usually ok.
+    </td>
+    <td>
+    <input type=text name=openssl_bin value="<?php echo htvar($openssl_bin)?>" size=35>
+    </td>
+    </tr>
+
+    <tr>
+    <td width=35%>
+    <strong>Location of HTTP password file <font color=red>*</font></strong><br>
+    Enter the location of your PHPki user password file.  The default is usually ok.
+    </td>
+    <td>
+    <input type=text name=passwd_file value="<?php echo htvar($passwd_file)?>" size=35>
+    </td>
+    </tr>
+
+    <tr>
+    <td>
+    <strong>File Upload Prefix</strong><br>
+    This is an optional prefix which will be added to root certificate
+    and certificate revocation list file uploads.  Normally the root 
+    certificate is uploaded as caroot.crt.  With a prefix like
+    <cite style="white-space: nowrap">"acme_"</cite>, the root certificate would be uploaded as
+    <cite>"acme_caroot.crt"</cite>.
+    </td>
+    <td>
+    <input type=text name=ca_prefix value="<?php echo htvar($ca_prefix)?>" maxlength=10 size=10>
+    </td>
+    </tr>
+
+    <tr>
+    <td>
+    <strong>Page Header Title</strong><br>
+    This title will be displayed superimposed over the PHPki logo at the
+    top of every page.
+    </td>
+    <td>
+    <input type=text name=header_title value="<?php echo htvar($header_title)?>" maxlength=40 size=40>
+    </td>
+    </tr>
+
+    <tr>
+    <td>
+    <strong>Help Document Contact Info</strong><br>
+    This text will be inserted into the online help document
+    under the "Getting Additional Help" section.  Include full
+    contact info for the convenience of your users.  Use HTML
+    tags to improve presentation.
+    </td>
+    <td>
+    <textarea name=getting_help cols=50 rows=15><?php echo htvar($getting_help)?></textarea>
+    </td>
+    </tr>
+    </table>
+    <font color=red>* Required field</font>
+
+    <p>
+    <center><input type=submit name=submit value=Submit></center></td>
+    <input type=hidden name=stage value='validate'>
+    </form>
+
+    <?php
+    printFooter();
+        break;
 }
 
-function create_ca_cnf($email, $expiry) {
+function create_ca_cnf($email, $expiry)
+{
 }
 ?>
