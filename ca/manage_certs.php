@@ -6,14 +6,14 @@ include('../include/my_functions.php');
 include('../include/common.php');
 include('../include/openssl_functions.php');
 
-$stage     = gpvar('stage');
-$serial    = gpvar('serial');
-$sortfield = gpvar('sortfield');
-$ascdec    = gpvar('ascdec');
-$passwd    = gpvar('passwd');
-$expiry    = gpvar('expiry');
-$submit    = gpvar('submit');
-$dl_type   = gpvar('dl_type');
+$stage        = gpvar('stage');
+$serial       = gpvar('serial');
+$sortfield    = gpvar('sortfield');
+$ascdec       = gpvar('ascdec');
+$passwd       = gpvar('passwd');
+$expiry       = gpvar('expiry');
+$submit       = gpvar('submit');
+$dl_type      = gpvar('dl_type');
 
 $search       = gpvar('search');
 $show_valid   = gpvar('show_valid');
@@ -49,10 +49,10 @@ switch ($stage) {
     case 'display':
         printHeader(false);
         ?>
-    
+
         <center><h2>Certificate Details</h2></center>
         <center><font color="#0000AA"><h3>(#<?php echo $serial?>)<br><?php echo htvar(CA_cert_cname($serial).' <'.CA_cert_email($serial).'>')?> </h3></font></center>
-    
+
     <?php
 
     if ($revoke_date = CAdb_is_revoked($serial)) {
@@ -68,7 +68,7 @@ switch ($stage) {
         $rec = CAdb_get_entry($serial);
 
         ?>
-        <h3>You are about to download the <font color=red>PRIVATE</font> certificate key for <?php echo $rec['common_name'].' &lt;'.$rec['email'].'&gt; '?></h3>
+    <h3>You are about to download the <font color=red>PRIVATE</font> certificate key for <?php echo $rec['common_name'].' &lt;'.$rec['email'].'&gt; '?></h3>
     <h3><font color="red">DO NOT DISTRIBUTE THIS FILE TO THE PUBLIC!</font></h3>
     <form action="<?php echo $PHP_SELF.'?stage=download&serial='.$serial.'&'.$qstr_sort.'&'.$qstr_filter?>" method="post">
     <strong>File type: </strong>
@@ -141,14 +141,14 @@ switch ($stage) {
 
         print '
          <td>
-      '.htvar($rec['serial']).'<br>
-         '.htvar($rec['common_name']).'<br>
-         '.htvar($rec['email']).'<br>
-         '.htvar($rec['organization']).'<br>
-         '.htvar($rec['unit']).'<br>
-         '.htvar($rec['locality']).'<br>
-         '.htvar($rec['province']).'<br>
-         '.htvar($rec['country']).'<br>
+            '.htvar($rec['serial']).'<br>
+            '.htvar($rec['common_name']).'<br>
+            '.htvar($rec['email']).'<br>
+            '.htvar($rec['organization']).'<br>
+            '.htvar($rec['unit']).'<br>
+            '.htvar($rec['locality']).'<br>
+            '.htvar($rec['province']).'<br>
+            '.htvar($rec['country']).'<br>
          </td>
        </tr></table>
       <h4>Are you sure?</h4>
@@ -158,7 +158,7 @@ switch ($stage) {
              <input type=submit name=submit value=Yes >&nbsp
              <input type=submit name=submit value=Cancel>
          </form>';
-    
+
         break;
 
     case 'revoke':
@@ -177,11 +177,11 @@ switch ($stage) {
             <blockquote>
             <h3>Debug Info:</h3>
             <pre><?php echo $errtxt?></pre>
-        </blockquote>
-        <p>
-        <input type=submit name=submit value=Back>
-        <p>
-        </form>
+            </blockquote>
+            <p>
+            <input type=submit name=submit value=Back>
+            <p>
+            </form>
         <?php
         } else {
             header("Location: ${PHP_SELF}?$qstr_sort&$qstr_filter");
@@ -214,79 +214,78 @@ switch ($stage) {
         <body onLoad="self.focus();document.form.passwd.focus();">
 
         <form action="<?php echo $PHP_SELF.'?'.$qstr_sort.'&'.$qstr_filter?>" method=post name=form>
-    <table width=99%>
-    <th colspan="2"><h3>Certificate Renewal Form</h3></th>
+        <table width=99%>
+        <th colspan="2"><h3>Certificate Renewal Form</h3></th>
 
-    <tr>
-    <td colspan="2" style="text-align:center">This will Revoke the old Certificate and Create a new one<br>You can add a password if required</td>
-    </tr>
-    
-    <tr>
-    <td width="25%">Common Name </td>
-    <td><input type="text"" name="common_name" value="<?php echo  htvar($common_name)?>" size="50" maxlength="60" disabled></td>
-    </tr>
+        <tr>
+        <td colspan="2" style="text-align:center">This will Revoke the old Certificate and Create a new one<br>You can add a password if required</td>
+        </tr>
 
-    <tr>
-    <td>E-mail Address </td>
-    <td><input type="text" name="email" value="<?php echo htvar($email)?>" size="50" maxlength="60" disabled></td>
-    </tr>
+        <tr>
+        <td width="25%">Common Name </td>
+        <td><input type="text"" name="common_name" value="<?php echo  htvar($common_name)?>" size="50" maxlength="60" disabled></td>
+        </tr>
 
-    <tr>
-    <td>Organization </td>
-    <td><input type="text" name="organization" value="<?php echo htvar($organization)?>" size="60" maxlength="60" disabled></td>
-    </tr>
+        <tr>
+        <td>E-mail Address </td>
+        <td><input type="text" name="email" value="<?php echo htvar($email)?>" size="50" maxlength="60" disabled></td>
+        </tr>
 
-    <tr>
-    <td>Department/Unit </td><td><input type="text" name="unit" value="<?php echo  htvar($unit) ?>" size="40" maxlength="60" disabled></td>
-    </tr>
+        <tr>
+        <td>Organization </td>
+        <td><input type="text" name="organization" value="<?php echo htvar($organization)?>" size="60" maxlength="60" disabled></td>
+        </tr>
 
-    <tr>
-    <td>Locality</td><td><input type="text" name="locality" value="<?php echo  htvar($locality) ?>" size="30" maxlength="30" disabled></td>
-    </tr>
+        <tr>
+        <td>Department/Unit </td><td><input type="text" name="unit" value="<?php echo  htvar($unit) ?>" size="40" maxlength="60" disabled></td>
+        </tr>
 
-    <tr>
-    <td>State/Province</td><td><input type="text" name="province" value="<?php echo  htvar($province) ?>" size="30" maxlength="30" disabled></td>
-    </tr>
+        <tr>
+        <td>Locality</td><td><input type="text" name="locality" value="<?php echo  htvar($locality) ?>" size="30" maxlength="30" disabled></td>
+        </tr>
 
-    <tr>
-    <td>Country</td>
-    <td><input type="text" name="country" value="<?php echo  htvar($country) ?>" size="2" maxlength="2" disabled></td>
-    </tr>
+        <tr>
+        <td>State/Province</td><td><input type="text" name="province" value="<?php echo  htvar($province) ?>" size="30" maxlength="30" disabled></td>
+        </tr>
 
-    <tr>
-    <td>Certificate Password </td>
-    <td><input type="password" name="passwd" value="<?php echo  htvar($passwd) ?>" size="30"></td>
-    </tr>
+        <tr>
+        <td>Country</td>
+        <td><input type="text" name="country" value="<?php echo  htvar($country) ?>" size="2" maxlength="2" disabled></td>
+        </tr>
 
-    <tr>
-    <td>Certificate Life </td>
-    <td><select name=expiry>
-    <?php
+        <tr>
+        <td>Certificate Password </td>
+        <td><input type="password" name="passwd" value="<?php echo  htvar($passwd) ?>" size="30"></td>
+        </tr>
 
-    print "<option value=0.083 " . ($expiry == 1 ? "selected='selected'" : "") . " >1 Month</option>\n" ;
-    print "<option value=0.25 " . ($expiry == 1 ? "selected='selected'" : "") . " >3 Months</option>\n" ;
-    print "<option value=0.5 " . ($expiry == 1 ? "selected='selected'" : "") . " >6 Months</option>\n" ;
-    print "<option value=1 " . ($expiry == 1 ? "selected='selected'" : "") . " >1 Year</option>\n" ;
-    for ($i = 2; $i <= 5; $i++) {
-        print "<option value=$i " . ($expiry == $i ? "selected='selected'" : "") . " >$i Years</option>\n" ;
-    }
+        <tr>
+        <td>Certificate Life </td>
+        <td><select name=expiry>
 
-    ?>
+        <?php
+        print "<option value=0.083 " . ($expiry == 1 ? "selected='selected'" : "") . " >1 Month</option>\n" ;
+        print "<option value=0.25 " . ($expiry == 1 ? "selected='selected'" : "") . " >3 Months</option>\n" ;
+        print "<option value=0.5 " . ($expiry == 1 ? "selected='selected'" : "") . " >6 Months</option>\n" ;
+        print "<option value=1 " . ($expiry == 1 ? "selected='selected'" : "") . " >1 Year</option>\n" ;
+        for ($i = 2; $i <= 5; $i++) {
+            print "<option value=$i " . ($expiry == $i ? "selected='selected'" : "") . " >$i Years</option>\n" ;
+        }
+        ?>
 
-    </select></td>
-    </tr>
-    <tr>
-    <td>&nbsp</td>
-    <td>
-        <input type="submit" name="submit" value="Submit Request">&nbsp
-        <input type="submit" name="submit" value="Back">
-        <input type="hidden" name="stage" value="renew">
-        <input type="hidden" name="serial" value="<?php echo $serial ?>" >
-    </td>
-    </tr>
-    </table>
-    </form>
-    
+        </select></td>
+        </tr>
+        <tr>
+        <td>&nbsp</td>
+        <td>
+            <input type="submit" name="submit" value="Submit Request">&nbsp
+            <input type="submit" name="submit" value="Back">
+            <input type="hidden" name="stage" value="renew">
+            <input type="hidden" name="serial" value="<?php echo $serial ?>" >
+        </td>
+        </tr>
+        </table>
+        </form>
+
     <?php
 
     printFooter();
@@ -297,7 +296,7 @@ switch ($stage) {
         if ($submit == "Submit Request") {
             list($ret, $errtxt) = CA_renew_cert($serial, $expiry, $passwd);
         }
-        
+
         if (! $ret) {
             printHeader('ca');
 
@@ -309,12 +308,12 @@ switch ($stage) {
             <blockquote>
             <h3>Debug Info:</h3>
             <pre><?php echo $errtxt?></pre>
-        </blockquote>
-        <p>
-        <input type="submit" name="submit" value="Back">
-        <p>
-        </form>
-        <?php
+            </blockquote>
+            <p>
+            <input type="submit" name="submit" value="Back">
+            <p>
+            </form>
+            <?php
         } else {
             header("Location: $PHP_SELF?$qstr_sort&$qstr_filter");
         }
@@ -323,8 +322,8 @@ switch ($stage) {
 
     default:
         printHeader('ca');
-
         ?>
+
         <body onLoad="self.focus();document.filter.search.focus();">
         <table style="margin:0 auto">
         <tr><th colspan=9><big>CERTIFICATE MANAGEMENT CONTROL PANEL</big></th></tr>
@@ -342,6 +341,7 @@ switch ($stage) {
         </form>
     </center></td>
     </tr>
+
     <?php
 
     if (! $sortfield) {
@@ -358,7 +358,7 @@ switch ($stage) {
     }
 
     print '<tr>';
-    
+
     $headings = array(
         'status'=>"Status", 'issued'=>"Issued", 'expires'=>"Expires",
         'common_name'=>"User's Name", 'email'=>"E-mail",
@@ -392,7 +392,7 @@ switch ($stage) {
         $stcolor = array('Valid'=>'green','Revoked'=>'red','Expired'=>'orange');
 
     foreach ($db as $rec) {
-        print   '<tr style="font-size: 11px;">
+        print '<tr style="font-size: 11px;">
        <td><font color='.$stcolor[$rec['status']].'><b>' .$rec[status].'</b></font></td>
        <td style="white-space: nowrap">'.$rec['issued'].'</td>
        <td style="white-space: nowrap">'.$rec['expires'].'</td>
