@@ -13,7 +13,7 @@ function CA_create_cnf($country = '', $province = '', $locality = '', $organizat
     $count_dns = 0;
     $count_ip = 0;
     $alt_names = "";
-    
+
     if (! $dns_names == '') {
         $dns_n=explode("\n", $dns_names);
         $count_dns  = $count_dns + 1;
@@ -25,7 +25,7 @@ function CA_create_cnf($country = '', $province = '', $locality = '', $organizat
             }
         }
     }
-    
+
     if (! $ip_addr == '') {
         $ip_ar=explode("\n", $ip_addr);
         foreach ($ip_ar as $value) {
@@ -44,7 +44,7 @@ function CA_create_cnf($country = '', $province = '', $locality = '', $organizat
     } else {
         $server_altnames = "DNS:$common_name,email:copy";
     }
-    
+
     $configHOME             = $config['home_dir'];
     $configRANDFILE         = $config['random'];
     $configCa_dir           = $config['ca_dir'];
@@ -66,11 +66,11 @@ function CA_create_cnf($country = '', $province = '', $locality = '', $organizat
     $configComment_email    = $config['comment_email'];
     $configComment_sign     = $config['comment_sign'];
     $configComment_srv      = $config['comment_srv'];
-    
-    
-    
+
+
+
     $cnf_contents = "
-HOME             = $configHOME 
+HOME             = $configHOME
 RANDFILE         = $configRANDFILE
 dir	             = $configCa_dir
 certs            = $configCert_dir
@@ -132,7 +132,7 @@ policy                 = policy_supplied
 x509_extensions        = vpn_client_server_ext
 default_days           = 365
 policy                 = policy_supplied
- 
+
 [ time_stamping_cert ]
 x509_extensions        = time_stamping_ext
 default_days           = 365
@@ -261,7 +261,7 @@ $alt_names
     $handle = fopen($cnf_file, "w");
     fwrite($handle, $cnf_contents);
     fclose($handle);
-    
+
     return($cnf_file);
 }
 
@@ -322,7 +322,7 @@ function CAdb_get_entry($serial)
 {
     global $config;
     $regexp = "^[VR]\t.*\t.*\t$serial\t.*\t.*$";
-        $x = exec('egrep '.escshellarg($regexp).' '.$config['index']);
+    $x = exec('egrep '.escshellarg($regexp).' '.$config['index']);
     if ($x) {
         return CAdb_explode_entry($x);
     } else {
@@ -341,7 +341,7 @@ function CAdb_in($email = "", $name = "")
     $email = escshellcmd($email);
     $name = escshellcmd($name);
     $regexp = "^[V].*CN=$name/(Email|emailAddress)=$email";
-        $x =exec('egrep '.escshellarg($regexp).' '.$config['index']);
+    $x = exec('egrep '.escshellarg($regexp).' '.$config['index']);
 
     if ($x) {
         list($j,$j,$j,$serial,$j,$j) = explode("\t", $x);
@@ -410,7 +410,7 @@ function CAdb_explode_entry($dbentry)
     sscanf(CA_cert_enddate($a[3]), "%s%s%s%s", $mm, $dd, $tt, $yy);
     $db['expires'] = strftime("%Y-%b-%d", strtotime("$yy-$mm-$dd"));
     $db['expiresSort'] = strftime("%Y-%m-%d", strtotime("$yy-$mm-$dd"));
-    
+
     if (time() > strtotime("$yy-$mm-$dd")) {
         $db['status'] = "Expired";
     }
@@ -418,26 +418,26 @@ function CAdb_explode_entry($dbentry)
 
     // Compatibility with migrated certs from openvpn-bridge
     if (count($b) == 7) {
-                $db['serial']       = $a[3];
-                $db['country']      = $b[1];
-                $db['province']     = $b[2];
-                $db['locality']     = '';
-                $db['organization'] = $b[3];
-                $db['issuer']       = '';
-                $db['unit']         = $b[4];
-                $db['common_name']  = $b[5];
-                $db['email']        = $b[6];
+        $db['serial']       = $a[3];
+        $db['country']      = $b[1];
+        $db['province']     = $b[2];
+        $db['locality']     = '';
+        $db['organization'] = $b[3];
+        $db['issuer']       = '';
+        $db['unit']         = $b[4];
+        $db['common_name']  = $b[5];
+        $db['email']        = $b[6];
     } // Compatibility with renewed certs from openvpn-bridge
     elseif (count($b) == 8) {
-            $db['serial']       = $a[3];
-            $db['country']      = $b[1];
-            $db['province']     = $b[2];
-            $db['locality']     = $b[3];
-            $db['organization'] = $b[4];
-            $db['issuer']       = '';
-            $db['unit']         = $b[5];
-            $db['common_name']  = $b[6];
-            $db['email']        = $b[7];
+        $db['serial']       = $a[3];
+        $db['country']      = $b[1];
+        $db['province']     = $b[2];
+        $db['locality']     = $b[3];
+        $db['organization'] = $b[4];
+        $db['issuer']       = '';
+        $db['unit']         = $b[5];
+        $db['common_name']  = $b[6];
+        $db['email']        = $b[7];
     } // Else, it's a certificate created with phpki
     else {
         $db['serial']       = $a[3];
@@ -462,7 +462,7 @@ function CAdb_is_revoked($serial)
 {
     global $config;
     $regexp = "^R\t.*\t.*\t$serial\t.*\t.*$";
-        $x = exec('egrep '.escshellarg($regexp).' '.$config['index']);
+    $x = exec('egrep '.escshellarg($regexp).' '.$config['index']);
 
     if ($x) {
         list($j,$j,$revoke_date,$j,$j,$j) = explode("\t", $x);
@@ -607,7 +607,7 @@ function CA_revoke_cert($serial)
         unset($cmd_output);
         list($ret, $cmd_output[]) = CA_generate_crl();
     }
-    
+
     fclose($fd);
 
     return array(($ret == true || $ret == 0 ? true : false), implode('<br>', $cmd_output));
@@ -633,6 +633,7 @@ function CA_create_cert($cert_type = 'email', $country, $province, $locality, $o
 
     $userkey   = $config['private_dir'] . "/$serial-key.pem";
     $userreq   = $config['req_dir'] ."/$serial-req.pem";
+    $usercert  = $config['new_certs_dir'].'/'.$serial.'.pem';
     $userder   = $config['cert_dir'] . "/$serial.der";
     $userpfx   = $config['pfx_dir'] . "/$serial.pfx";
 
@@ -645,7 +646,7 @@ function CA_create_cert($cert_type = 'email', $country, $province, $locality, $o
     $_passwd       = escshellarg($passwd);
     $friendly_name = escshellarg($common_name);
     $extensions    = escshellarg($cert_type.'_ext');
-    
+
     # Create the certificate request
     unset($cmd_output);
     $cmd_output[] = 'Creating certificate request.';
@@ -655,7 +656,7 @@ function CA_create_cert($cert_type = 'email', $country, $province, $locality, $o
     } else {
         exec(REQ." -new -newkey rsa:$keysize -keyout '$userkey' -out '$userreq' -config '$cnf_file' -days '$expiry_days' -nodes  2>&1", $cmd_output, $ret);
     }
-    
+
     # Sign the certificate request and create the certificate
     if ($ret == 0) {
         unset($cmd_output);
@@ -678,7 +679,7 @@ function CA_create_cert($cert_type = 'email', $country, $province, $locality, $o
         $configCacert_pem = $config['cacert_pem'];
         $configOrganization = $config['organization'];
         $configRandom = $config['random'];
-        
+
         if (($_passwd) && ($_passwd != "''")) {
             $cmd_output[] = "infile: $usercert   keyfile: $userkey   outfile: $userpfx  pass: $_passwd";
             exec(PKCS12." -export -in '$usercert' -inkey '$userkey' -certfile '$configCacert_pem' -caname '$configOrganization' -out '$userpfx' -name $friendly_name -rand '$configRandom' -passin pass:$_passwd -passout pass:$_passwd  2>&1", $cmd_output, $ret);
@@ -789,7 +790,7 @@ function CA_renew_cert($old_serial, $expiry, $passwd)
         $cmd_output[] = "Could not update private key file.";
         $ret = 1;
     }
-    
+
     $cnf_file = CA_create_cnf($country, $province, $locality, $organization, $unit, $common_name, $email);
 
     # "friendly name" of PKCS12 certificate.
@@ -802,7 +803,7 @@ function CA_renew_cert($old_serial, $expiry, $passwd)
     $configCacert_pem = $config['cacert_pem'];
     $configOrganization = $config['organization'];
     $configRandom = $config['random'];
-    
+
     # Sign the certificate request and create the certificate.
     if ($ret == 0) {
         unset($cmd_output);
@@ -831,7 +832,7 @@ function CA_renew_cert($old_serial, $expiry, $passwd)
             //exec(PKCS12." -export -in '$usercert' -inkey '$userkey' -certfile '$config[cacert_pem]' -caname '$config[organization]' -out '$userpfx' -name $friendly_name  -nodes 2>&1", $cmd_output, $ret);
         }
     };
-    
+
     #Unlock the CA database
     fclose($fd);
 
@@ -842,7 +843,7 @@ function CA_renew_cert($old_serial, $expiry, $passwd)
     if (preg_match('E-mail Protection', $certtext)) {
         $cert_type = 'email';
     }
-    
+
     #Remove temporary openssl config file.
     if (file_exists($cnf_file)) {
         unlink($cnf_file);
@@ -903,7 +904,7 @@ function CA_remove_cert($serial)
     $usercert = $config['new_certs_dir'] . "/$serial.pem";
     $userder  = $config['cert_dir'] . "/$serial.der";
     $userpfx  = $config['pfx_dir'] ."/$serial.pfx";
-    
+
     $configIndex = $config['index'];
 
     # Wait here if another user has the database locked.
