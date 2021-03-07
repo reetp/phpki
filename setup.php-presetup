@@ -148,7 +148,7 @@ switch ($stage) {
         if (! preg_match("/\b[A-Z][A-Z]\b/", $countrycode, $match)) {
             $er .= 'Country Code must be ISO 3166 two letters <br>';
         }
-    
+
         if ($passwd && strlen($passwd) < 8) {
             $er .= 'Certificate password is too short.<br>';
         }
@@ -304,7 +304,7 @@ switch ($stage) {
 \$config['revoke_url']  = '$revoke_url';
 
 # Certificate Authority Policy URL
-\$config['policy_url']  = '$policy_url'; 
+\$config['policy_url']  = '$policy_url';
 
 # Certificate Comment Fields
 \$config['comment_root']  = '$comment_root';
@@ -393,7 +393,7 @@ EOS;
         # CA root certificate, and create a generic openssl.cnf file
         # in the CA home
         #
-        
+
         $configHOME             = $config['home_dir'];
         $configRANDFILE         = $config['random'];
         $configCa_dir           = $config['ca_dir'];
@@ -415,15 +415,15 @@ EOS;
         $configComment_email    = $config['comment_email'];
         $configComment_sign     = $config['comment_sign'];
         $configComment_srv      = $config['comment_srv'];
-    
+
 
         $config_txt1 = "
 
-HOME             = $configHOME 
+HOME             = $configHOME
 RANDFILE         = $configRANDFILE
-dir	             = $configCa_dir
+dir              = $configCa_dir
 certs            = $configCert_dir
-crl_dir	         = $configCrl_dir
+crl_dir          = $configCrl_dir
 database         = $configDatabase
 new_certs_dir    = $configNew_certs_dir
 private_dir      = $configPrivate_dir
@@ -431,7 +431,7 @@ serial           = $configSerial
 certificate      = $configCacert_pem
 crl              = $configCacrl_pem
 private_key      = $configCakey
-crl_extentions	 = crl_ext
+crl_extentions   = crl_ext
 default_days     = 365
 default_crl_days = 30
 preserve         = no
@@ -602,19 +602,19 @@ countryName_min       = 2
 countryName_max       = 2
 
 stateOrProvinceName   = State or Province Name (full name)
-stateOrProvinceName_default = 
+stateOrProvinceName_default =
 
 localityName          = Locality Name (eg, city)
-localityName_default  = 
+localityName_default  =
 
 0.organizationName    = Organization Name (eg, company)
 0.organizationName_default  =
 
 1.organizationName    = Second Organization Name (eg, company)
-1.organizationName_default  = 
+1.organizationName_default  =
 
 organizationalUnitName    = Organizational Unit Name (eg, section)
-organizationalUnitName_default  = 
+organizationalUnitName_default  =
 
 commonName            = Common Name (eg, YOUR name)
 
@@ -695,7 +695,7 @@ EOS;
         #
         print '<strong>Creating root certificate...</strong><br>';
         flush();
-        
+
         $configOpenssl_cnf = $config['openssl_cnf'];
         $configPrivate_dir = $config['private_dir'];
         $configCacert_pem = $config['cacert_pem'];
@@ -704,7 +704,7 @@ EOS;
         $configRandom = $config['random'];
         $configCacrl_der = $config['cacrl_der'];
         $configCacrl_pem = $config['cacrl_pem'];
-        
+
         // .rnd created here
         exec(REQ . " -x509 -config $tmp_cnf -extensions root_ext -newkey rsa:$keysize -keyout $configCakey -out $configCacert_pem -passout pass:'$configCa_pwd' -days $days 2>&1");
 
@@ -748,22 +748,22 @@ EOS;
         // This method works but still errors in logs
         // exec(DH . "-rand '$config[random]' -out '$config[private_dir]/dhparam1024.pem' 1024");
         // exec(DH . " -out '$config[private_dir]/dhparam1024.pem' 1024");
-    
+
         print '<p><strong>Creating 2048 bit Diffie-Hellman parameters used by OpenVPN.<br>';
         print "Saving to $store_dir/dhparam2048.pem.</strong><br>";
         $cmd = "openssl dhparam -rand '$configRandom' -out '$configPrivate_dir/dhparam2048.pem' 2048";
         print $cmd.'<br>';
         flush();
         flush_exec($cmd, 200);
-    
+
         print "Please ignore warnings about \"unable to write 'random state' <br><br>";
-    
+
         #
         # Create a TLS auth key for OpenVPN if openvpn is installed
         #
         $command = 'which openvpn';
         $command = escapeshellcmd($command);
-    
+
         if (system($command) == '/usr/sbin/openvpn') {
             print '<p><strong>Creating a TLS authentication key used by OpenVPN.<br>';
             print "Saving to $store_dir/takey.pem.</strong><br>";
@@ -778,7 +778,7 @@ EOS;
         }
 
 
-    
+
         #
         # Step aside and let the users in (create index.php files).
         #
@@ -934,7 +934,7 @@ E-mail: <a href=mailto:someone@somewhere.com>someone@somewhere.com</a>&nbsp;&nbs
         if (! $passwd_file) {
             $passwd_file = dirname($_SERVER['DOCUMENT_ROOT']).'/phpkipasswd';
         }
-    
+
         if (! $header_title) {
             $header_title = $config['header_title'];
         }
@@ -977,7 +977,7 @@ E-mail: <a href=mailto:someone@somewhere.com>someone@somewhere.com</a>&nbsp;&nbs
     Enter an e-mail address where users should send correspondence
     regarding your certificate authority and the certificates you issue.
     </td>
-    
+
     <td><input type=text name=contact value="<?php echo htvar($contact)?>" maxlength=60 size=30></td>
     </tr>
 
@@ -1153,7 +1153,7 @@ E-mail: <a href=mailto:someone@somewhere.com>someone@somewhere.com</a>&nbsp;&nbs
     <td width=35%>
     <strong>Storage Directory <font color=red>*</font></strong><br>
     Enter the location where PHPki will store its files.  This should be a directory where
-    the web server has full read/write access (chown <?php echo $uname?> ; chmod 700), and is preferably 
+    the web server has full read/write access (chown <?php echo $uname?> ; chmod 700), and is preferably
     outside of DOCUMENT_ROOT (<?php echo $_SERVER['DOCUMENT_ROOT']?>).  You may have to manually create the directory before completing this form.
     </td>
     <td>
@@ -1185,7 +1185,7 @@ E-mail: <a href=mailto:someone@somewhere.com>someone@somewhere.com</a>&nbsp;&nbs
     <td>
     <strong>File Upload Prefix</strong><br>
     This is an optional prefix which will be added to root certificate
-    and certificate revocation list file uploads.  Normally the root 
+    and certificate revocation list file uploads.  Normally the root
     certificate is uploaded as caroot.crt.  With a prefix like
     <cite style="white-space: nowrap">"acme_"</cite>, the root certificate would be uploaded as
     <cite>"acme_caroot.crt"</cite>.
