@@ -885,7 +885,7 @@ function CA_generate_crl()
     if ($ret == 0) {
         unset($cmd_output);
         $cmd_output[] = "Creating DER format Certificate Revocation List.";
-        exec(CRL." -in '$configCacrl_der' -out '$configCacrl_der' -inform PEM -outform DER 2>&1", $cmd_output, $ret);
+        exec(CRL." -in '$configCacrl_pem' -out '$configCacrl_der' -inform PEM -outform DER 2>&1", $cmd_output, $ret);
     }
 
     return array(($ret == 0 ? true : false), implode('<br>', $cmd_output));
