@@ -601,7 +601,7 @@ function CA_revoke_cert($serial)
     $cmd_output[] = 'Revoking the certificate.';
     $configCa_pwd = $config['ca_pwd'];
     $configOpenssl_cnf = $config['openssl_cnf'];
-    exec(CA." -config $configOpenssl_cnf -revoke ".escshellarg($certfile)." -passin pass:$ConfigCa_pwd 2>&1", $cmd_output, $ret);
+    exec(CA." -config $configOpenssl_cnf -revoke ".escshellarg($certfile)." -passin pass:$configCa_pwd 2>&1", $cmd_output, $ret);
 
     if ($ret == 0) {
         unset($cmd_output);
@@ -836,12 +836,12 @@ function CA_renew_cert($old_serial, $expiry, $passwd)
     #Unlock the CA database
     fclose($fd);
 
-    # https://github.com/radicand/phpki/issues/14
-    if (preg_match('E-mail Protection', $certtext) && preg_match('Code Signing', $certtest)) {
-        $cert_type = 'email_signing';
-    }
-    if (preg_match('E-mail Protection', $certtext)) {
+    //# https://github.com/radicand/phpki/issues/14 - but ereg is deprecated
+    if (preg_match('/E-mail Protection/', $certtext)) {
         $cert_type = 'email';
+    }
+    if (preg_match('/E-mail Protection/', $certtext) && preg_match('/Code Signing/', $certtext)) {
+        $cert_type = 'email_signing';
     }
 
     #Remove temporary openssl config file.
@@ -855,7 +855,7 @@ function CA_renew_cert($old_serial, $expiry, $passwd)
         # Not successful, so clean up before exiting.
         CA_remove_cert($serial);
 
-        if (eregi_array('.*private key.*', $cmd_output)) {
+        if (preg_match_array('.*private key.*', $cmd_output)) {
             $cmd_output[] = '<strong>This was likely caused by entering the wrong certificate password.</strong>';
         } else {
             $cmd_output[] = '<strong>Click on the "Help" link above for information on how to report this problem.</strong>';
@@ -946,27 +946,20 @@ function CA_cert_type($serial)
 
     $certtext = CA_cert_text($serial);
 
-    #if (ereg('OpenSSL.* (E.?mail|Personal) .*Certificate', $certtext) && ereg('Code Signing', $certtest)) {
-    if (preg_match('~OpenSSL.* (E.?mail|Personal) .*Certificate~', $certtext) && preg_match('~Code Signing~', $certtest)) {
-        $cert_type = 'email_codesigning';
-    }
-    #if (ereg('OpenSSL.* (E.?mail|Personal) .*Certificate', $certtext)) {
     if (preg_match('~OpenSSL.* (E.?mail|Personal) .*Certificate~', $certtext)) {
         $cert_type = 'email';
-    } #elseif (ereg('OpenSSL.* Server .*Certificate', $certtext)) {
-    elseif (preg_match('~OpenSSL.* Server .*Certificate~', $certtext)) {
+    }
+    if (preg_match('~OpenSSL.* (E.?mail|Personal) .*Certificate~', $certtext) && preg_match('~Code Signing~', $certtext)) {
+        $cert_type = 'email_signing'; // Was 'codesigning' but can't see that anywhere
+    } elseif (preg_match('~OpenSSL.* Server .*Certificate~', $certtext)) {
         $cert_type = 'server';
-    } #elseif (ereg('timeStamping|Time Stamping', $certtext)) {
-    elseif (preg_match('~timeStamping|Time Stamping~', $certtext)) {
+    } elseif (preg_match('~timeStamping|Time Stamping~', $certtext)) {
         $cert_type = 'time_stamping';
-    } #elseif (ereg('TLS Web Client Authentication', $certtext) && ereg('TLS Web Server Authentication', $certtext)) {
-    elseif (preg_match('~TLS Web Client Authentication~', $certtext) && preg_match('~TLS Web Server Authentication~', $certtext)) {
+    } elseif (preg_match('~TLS Web Client Authentication~', $certtext) && preg_match('~TLS Web Server Authentication~', $certtext)) {
         $cert_type = 'vpn_client_server';
-    } #elseif (ereg('TLS Web Client Authentication', $certtext)) {
-    elseif (preg_match('~TLS Web Client Authentication~', $certtext)) {
+    } elseif (preg_match('~TLS Web Client Authentication~', $certtext)) {
         $cert_type = 'vpn_client';
-    } #elseif (ereg('TLS Web Server Authentication', $certtext)) {
-    elseif (preg_match('~TLS Web Server Authentication~', $certtext)) {
+    } elseif (preg_match('~TLS Web Server Authentication~', $certtext)) {
         $cert_type = 'vpn_server';
     } else {
         $cert_type = 'vpn_client_server';

@@ -270,7 +270,7 @@ function is_fqdn($FQDN)
 # as a match is found.
 #
 
-function eregi_array($regexp, $arr)
+function preg_match_array($regexp, $arr)
 {
 
     foreach ($arr as $elem) {
