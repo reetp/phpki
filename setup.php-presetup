@@ -692,7 +692,7 @@ EOS;
         #
         # Create a new self-signed CA certificate in PEM format.
         #
-        print '<strong>Creating root certificate...</strong><br>';
+        print '<strong>Creating root certificate... '. $keysize .' bits</strong><br>';
         flush();
 
         $configOpenssl_cnf = $config['openssl_cnf'];
@@ -773,7 +773,7 @@ EOS;
         } else {
             echo "openvpn is required to generate a takey.pem<br>";
             echo "You can create one later like this:<br>";
-            echo "openvpn --genkey --secret". $configPrivate_dir . "/takey.pem<br>";
+            echo "openvpn --genkey --secret ". $configPrivate_dir . "/takey.pem<br>";
         }
 
 
@@ -949,7 +949,10 @@ E-mail: <a href=mailto:someone@somewhere.com>someone@somewhere.com</a>&nbsp;&nbs
     <tr>
     <th colspan=2><h3>Root Certificate Data</h3></th>
     </tr>
-
+    <tr>
+    <td/><h4><font color=red>* Required field</font></h4></td>
+    <td>&nbsp;</td>
+    </tr>
     <tr>
     <td width=35%><strong>Organization</strong> <font color=red>*</font></td>
     <td><input type=text name=organization value="<?php echo htvar($organization)?>" maxlength=60 size=50></td>
@@ -1218,12 +1221,20 @@ E-mail: <a href=mailto:someone@somewhere.com>someone@somewhere.com</a>&nbsp;&nbs
     </td>
     </tr>
     </table>
-    <font color=red>* Required field</font>
 
+    <font color=red>* Required field</font>
+    <p><center><font color=red>Please click the Submit button ONCE and be patient.</font><br />
+       This may take a few minutes. Please do not interrupt the process.....</center>
+    </p>
+
+    <p><center><font color=red>Please click the Submit button ONCE and be patient.</font><br />
+       This may take a few minutes. Please do not interrupt the process.....</center>
+    </p>
     <p>
-    <center><input type=submit name=submit value=Submit></center></td>
+    <center><input style="border: 1px solid red; padding: 10px;" type=submit name=submit value=Submit></center>
     <input type=hidden name=stage value='validate'>
     </form>
+    </p>
 
     <?php
     printFooter();
