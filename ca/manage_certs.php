@@ -254,7 +254,7 @@ switch ($stage) {
         </tr>
 
         <tr>
-        <td>Certificate Password </td>
+        <td>Certificate Password</td>
         <td><input type="password" name="passwd" value="<?php echo  htvar($passwd) ?>" size="30"></td>
         </tr>
 

@@ -205,7 +205,7 @@ switch ($form_stage) {
 
         </tr></table>
 
-        <h4>Are you sure?</h4>
+        <h4>Are you sure? After creation you will be returned to the Create Certificate dialogue.</h4>
         <p><form action='<?php echo $PHP_SELF?>' method=post>
     <?php echo  $hidden_fields ?>
     <input type=hidden name=form_stage value=final>
@@ -258,10 +258,11 @@ switch ($form_stage) {
                 break;
                 } else {
                     $serial = $errtxt;
+                    // We could add 'return to index or create another certificate'
                 }
             }
         }
-    
+
         if ($submit == "Yes  Create and Download") {
             switch ($cert_type) {
                 case 'server':
@@ -278,12 +279,12 @@ switch ($form_stage) {
                     upload($config['pfx_dir'] . "/$serial.pfx", $rec['common_name'] . ".p12", 'application/x-pkcs12');
                     break;
             }
-        
+
             # Clear common_name fields
             $common_name = '';
             break;
         }
-    
+
     # Clear common_name fields
         $common_name = '';
 
@@ -333,49 +334,57 @@ switch ($form_stage) {
 
         printHeader();
         ?>
-    
+
         <body onLoad="self.focus();document.request.common_name.focus();document.request.cert_type.onchange();">
         <form action="<?php echo $PHP_SELF?>" method=post name=request>
         <table width=99%>
         <th colspan=2><h3>Certificate Request Form</h3></th>
-    
+        <?php
+        if ($serial) {
+            echo "<tr><td><h4><font color=red>Previous Certificate Created successfully</font></h4></td><td></h4><font color=red>$serial</font></h4></td></tr>";
+            echo "<tr><td><h4>Create another or go to back to the Menu</h4></td><td><a href='index.php'>Menu</a></td></tr>";
+        }
+        ?>
         <tr>
         <td width=30%>Common Name<font color=red size=3> *</font><br>(i.e. User real name or computer hostname - used as SubjectAltName)</td>
         <td><input type=text name=common_name value="<?php echo  htvar($common_name)?>" size=50 maxlength=60></td>
         </tr>
-    
+
         <tr>
         <td>E-mail Address<font color=red size=3> *</font></td>
         <td><input type=text name=email value="<?php echo htvar($email)?>" size=50 maxlength=60></td>
         </tr>
-    
+
         <tr>
-        <td>Organization (Company/Agency)<font color=red size=3> *</font></td>
+        <td>Organization(Company/Agency)<font color=red size=3> *</font></td>
         <td><input type=text name=organization value="<?php echo htvar($organization)?>" size=60 maxlength=60></td>
         </tr>
-    
+
         <tr>
         <td>Department/Unit<font color=red size=3> *</font> </td><td><input type=text name=unit value="<?php echo  htvar($unit) ?>" size=40 maxlength=60></td>
         </tr>
-    
+
         <tr>
-        <td>Locality (City/County)<font color=red size=3> *</font></td><td><input type=text name=locality value="<?php echo  htvar($locality) ?>" size=30 maxlength=30></td>
+        <td>Locality(City/County)<font color=red size=3> *</font></td><td><input type=text name=locality value="<?php echo  htvar($locality) ?>" size=30 maxlength=30></td>
         </tr>
-    
+
         <tr>
         <td>State/Province<font color=red size=3> *</font></td><td><input type=text name=province value="<?php echo  htvar($province) ?>" size=30 maxlength=30></td>
         </tr>
-    
+
         <tr>
         <td>Country<font color=red size=3> *</font></td>
         <td><input type=text name=country value="<?php echo  htvar($country) ?>" size=2 maxlength=2></td>
         </tr>
-    
+
         <tr>
         <td>Certificate Password<font color=red size=3> *</font><br>(Min 8 chars - Mandatory for Email,SSL Client,Code signing)</td>
-        <td><input type=password name=passwd value="<?php echo  htvar($passwd) ?>" size=30>&nbsp;&nbsp; Again <input type=password name=passwdv  value="<?php echo  htvar($passwdv) ?>" size=30></td>
+        <td>
+            <input type=password name=passwd value="<?php echo  htvar($passwd) ?>" size=30>&nbsp;&nbsp;&nbsp;Again
+            <input type=password name=passwdv value="<?php echo  htvar($passwdv) ?>" size=30>
+        </td>
         </tr>
-    
+
         <tr>
         <td>Certificate Life<font color=red size=3>*</font> </td>
         <td><select name=expiry>
@@ -388,12 +397,12 @@ switch ($form_stage) {
         for ($i = 2; $i <= 5; $i++) {
             print "<option value=$i " . ($expiry == $i ? "selected='selected'" : "") . " >$i Years</option>\n" ;
         }
-    
+
         ?>
-    
+
         </select></td>
         </tr>
-    
+
         <tr>
         <td>Key Size<font color=red size=3>*</font> </td>
         <td><select name=keysize>
@@ -402,10 +411,10 @@ switch ($form_stage) {
             print "<option value=$i " . ($keysize == $i ? "selected='selected'" : "") . ">$i bits</option>\n" ;
         }
         ?>
-    
+
         </select></td>
         </tr>
-    
+
         <tr>
         <td>Certificate Use:<font color=red size=3>*</font> </td>
         <td><select name=cert_type onchange="if (this.value=='server')
@@ -421,11 +430,11 @@ switch ($form_stage) {
         ?>
         </select></td>
         </tr>
-    
+
         <tr id="testrow2" name="testrow2" style="visibility:hidden;display:none;">
         <td>Alternative DNS Names<br>(only one per Line)</td><td><textarea name=dns_names cols=30 rows=5><?php echo htvar($dns_names) ?></textarea></td>
         </tr>
-    
+
         <tr id="testrow1" name="testrow1" style="visibility:hidden;display:none;">
         <td>IP's<br>(only one per Line)</td><td><textarea name=ip_addr cols=30 rows=5><?php echo htvar($ip_addr) ?></textarea></td>
         </tr>
