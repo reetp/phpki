@@ -72,9 +72,9 @@ function CA_create_cnf($country = '', $province = '', $locality = '', $organizat
     $cnf_contents = "
 HOME             = $configHOME
 RANDFILE         = $configRANDFILE
-dir	             = $configCa_dir
+dir              = $configCa_dir
 certs            = $configCert_dir
-crl_dir	         = $configCrl_dir
+crl_dir          = $configCrl_dir
 database         = $configDatabase
 new_certs_dir    = $configNew_certs_dir
 private_dir      = $configPrivate_dir
@@ -82,7 +82,7 @@ serial           = $configSerial
 certificate      = $configCacert_pem
 crl              = $configCacrl_pem
 private_key      = $configCakey
-crl_extentions	 = crl_ext
+crl_extentions   = crl_ext
 default_days     = 365
 default_crl_days = 30
 preserve         = no
@@ -497,7 +497,7 @@ function CAdb_is_valid($serial)
 function CA_cert_text($serial)
 {
     global $config;
-    $certfile = $config['new_certs_dir'] . '/' . $serial . '.pem';
+    $certfile = $config['new_certs_dir'] . "/$serial.pem";
     return(shell_exec(X509.' -in '.escshellarg($certfile).' -text -purpose 2>&1'));
 }
 
@@ -539,7 +539,7 @@ function root_pem_text()
 function CA_cert_subject($serial)
 {
     global $config;
-    $certfile = $config['new_certs_dir'] . '/' . $serial . '.pem';
+    $certfile = $config['new_certs_dir'] . "/$serial.pem";
     $x = exec(X509.' -in '.escshellarg($certfile).' -noout -subject 2>&1');
     return(str_replace('subject=', '', $x));
 }
@@ -560,7 +560,7 @@ function CA_cert_cname($serial)
 function CA_cert_email($serial)
 {
     global $config;
-    $certfile = $config['new_certs_dir'] . '/' . $serial . '.pem';
+    $certfile = $config['new_certs_dir'] . "/$serial.pem";
     $x = exec(X509.' -in '.escshellarg($certfile).' -noout -email 2>&1');
     return($x);
 }
@@ -571,7 +571,7 @@ function CA_cert_email($serial)
 function CA_cert_startdate($serial)
 {
     global $config;
-    $certfile = $config['new_certs_dir'] . '/' . $serial . '.pem';
+    $certfile = $config['new_certs_dir'] . "/$serial.pem";
     $x = exec(X509.' -in '.escshellarg($certfile).' -noout -startdate 2>&1');
     return(str_replace('notBefore=', '', $x));
 }
@@ -582,7 +582,7 @@ function CA_cert_startdate($serial)
 function CA_cert_enddate($serial)
 {
     global $config;
-    $certfile = $config['new_certs_dir'] . '/' . $serial . '.pem';
+    $certfile = $config['new_certs_dir'] . "/$serial.pem";
     $x = exec(X509.' -in '.escshellarg($certfile).' -noout -enddate  2>&1');
     return(str_replace('notAfter=', '', $x));
 }
@@ -633,7 +633,7 @@ function CA_create_cert($cert_type = 'email', $country, $province, $locality, $o
 
     $userkey   = $config['private_dir'] . "/$serial-key.pem";
     $userreq   = $config['req_dir'] ."/$serial-req.pem";
-    $usercert  = $config['new_certs_dir'].'/'.$serial.'.pem';
+    $usercert  = $config['new_certs_dir'] . "/$serial.pem";
     $userder   = $config['cert_dir'] . "/$serial.der";
     $userpfx   = $config['pfx_dir'] . "/$serial.pfx";
 
@@ -765,7 +765,7 @@ function CA_renew_cert($old_serial, $expiry, $passwd)
     # Get the next available serial number
     $serial = trim(implode('', file($config['serial'])));
 
-    $old_userkey = $config['private_dir'] . "$old_serial-key.pem";
+    $old_userkey = $config['private_dir'] . "/$old_serial-key.pem";
     $old_userreq = $config['req_dir'] . "/$old_serial-req.pem";
     $userkey     = $config['private_dir'] . "/$serial-key.pem";
     $userreq     = $config['req_dir'] . "/$serial-req.pem";
@@ -836,6 +836,8 @@ function CA_renew_cert($old_serial, $expiry, $passwd)
     #Unlock the CA database
     fclose($fd);
 
+    // Why is this here?
+    
     //# https://github.com/radicand/phpki/issues/14 - but ereg is deprecated
     if (preg_match('/E-mail Protection/', $certtext)) {
         $cert_type = 'email';
@@ -946,11 +948,10 @@ function CA_cert_type($serial)
 
     $certtext = CA_cert_text($serial);
 
-    if (preg_match('~OpenSSL.* (E.?mail|Personal) .*Certificate~', $certtext)) {
-        $cert_type = 'email';
-    }
     if (preg_match('~OpenSSL.* (E.?mail|Personal) .*Certificate~', $certtext) && preg_match('~Code Signing~', $certtext)) {
         $cert_type = 'email_signing'; // Was 'codesigning' but can't see that anywhere
+    } elseif (preg_match('~OpenSSL.* (E.?mail|Personal) .*Certificate~', $certtext)) {
+        $cert_type = 'email';
     } elseif (preg_match('~OpenSSL.* Server .*Certificate~', $certtext)) {
         $cert_type = 'server';
     } elseif (preg_match('~timeStamping|Time Stamping~', $certtext)) {
