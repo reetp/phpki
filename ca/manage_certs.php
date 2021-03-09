@@ -218,7 +218,8 @@ switch ($stage) {
         <th colspan="2"><h3>Certificate Renewal Form</h3></th>
 
         <tr>
-        <td colspan="2" style="text-align:center">This will Revoke the old Certificate and Create a new one<br>You can add a password if required</td>
+        <td colspan="2" style="text-align:center">This will Revoke the old Certificate and Create a new one<br>
+        <font color=red>If a password was used to create the original certificate you must use it below</font></td>
         </tr>
 
         <tr>
@@ -254,7 +255,7 @@ switch ($stage) {
         </tr>
 
         <tr>
-        <td>Certificate Password</td>
+        <td>Certificate Password <font color=red>- might be required</font></td>
         <td><input type="password" name="passwd" value="<?php echo  htvar($passwd) ?>" size="30"></td>
         </tr>
 
