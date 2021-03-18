@@ -38,7 +38,7 @@ function printHeader($withmenu = "default")
     ?>
     <!DOCTYPE html>
     <head>
-    <meta charset="utf-8">
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
     <title>PHPki: <?php echo $title?> </title>
     <link rel="stylesheet" type="text/css" href="<?php echo $style_css?>">
     <script type="text/javascript" language="javascript">
@@ -130,7 +130,7 @@ function printHeader($withmenu = "default")
         <?php
     }
 
-    ?><hr style="width:99%; align:left; color:#99caff;" /><?php
+    ?><hr style="width:99%; color:#99caff;" /><?php
 }
 
 
