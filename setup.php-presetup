@@ -3,29 +3,6 @@ include('./config.php');
 include('./include/my_functions.php');
 include('./include/common.php');
 
-function flush_exec($command, $line_length = 200)
-{
-        $handle = popen("$command 2>&1", 'r');
-
-        $line = '';
-    while (! feof($handle)) {
-            $chr = fread($handle, 1);
-            $line .= $chr;
-        if ($chr == "\n") {
-                print str_replace("\n", "<br>\n", $line);
-                $line = '';
-                flush();
-        } elseif (strlen($line) > $line_length) {
-                print $line."<br>\n";
-                $line = '';
-                flush();
-        }
-    }
-        print $line."<br>\n";
-    flush();
-    return;
-}
-
 $version = PHPKI_VERSION;
 
 # Who does the webserver run as (apache,www-data,etc)?
@@ -184,10 +161,10 @@ switch ($stage) {
                     $er .= "The store directory \"$store_dir\" is not readable by the web server user \"$uname\"<br>";
                 }
                 if (! is_writeable($store_dir)) {
-                    $er .= "The store directory \"$store_dir\: is not writeable by the web server user \"$uname\"<br>";
+                    $er .= "The store directory \"$store_dir\: is not writable by the web server user \"$uname\"<br>";
                 }
             } else {
-                $er .= "Store directory \"$store_dir\" does not exist.  You will have to manually create it as desribed in the setup form.<br>";
+                $er .= "Store directory \"$store_dir\" does not exist.  You will have to manually create it as described in the setup form.<br>";
             }
         }
 
@@ -1227,9 +1204,6 @@ E-mail: <a href=mailto:someone@somewhere.com>someone@somewhere.com</a>&nbsp;&nbs
        This may take a few minutes. Please do not interrupt the process.....</center>
     </p>
 
-    <p><center><font color=red>Please click the Submit button ONCE and be patient.</font><br />
-       This may take a few minutes. Please do not interrupt the process.....</center>
-    </p>
     <p>
     <center><input style="border: 1px solid red; padding: 10px;" type=submit name=submit value=Submit></center>
     <input type=hidden name=stage value='validate'>
