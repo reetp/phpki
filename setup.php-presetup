@@ -138,12 +138,16 @@ switch ($stage) {
                 $er .= 'E-mail address ('. htvar($contact) . ') may be invalid.<br>';
         }
 
-        if (strpos($store_dir, $_SERVER['DOCUMENT_ROOT']) === 0) {
-            $er .= 'Store directory must exist somewhere outside of DOCUMENT_ROOT ('.$_SERVER['DOCUMENT_ROOT'].').<br>';
+        // reetp this was the wrong way round - swapped
+        // strpos ($haystack, $needle)
+        if (strpos($_SERVER['DOCUMENT_ROOT'], $store_dir) === 0) {
+            $er .= 'Store directory ('.$store_dir.') must exist somewhere outside of DOCUMENT_ROOT ('.$_SERVER['DOCUMENT_ROOT'].').<br>';
         }
 
-        if (strpos($store_dir, dirname($_SERVER['SCRIPT_FILENAME'])) === 0) {
-            $er .= 'Store directory cannot exist within the PHPki installation directory ('.dirname($_SERVER['SCRIPT_FILENAME']).').<br>';
+        // reetp this was the wrong way round - swapped
+        // strpos ($haystack, $needle)
+        if (strpos(dirname($_SERVER['SCRIPT_FILENAME']), $store_dir) === 0) {
+            $er .= 'Store directory ('.$store_dir.') cannot exist within the PHPki installation directory ('.dirname($_SERVER['SCRIPT_FILENAME']).').<br>';
         }
 
         if (! $er) {
