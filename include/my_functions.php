@@ -305,3 +305,27 @@ function getOSInformation()
         return null;
     }
 }
+
+# Used in setup
+function flush_exec($command, $line_length = 200)
+{
+        $handle = popen("$command 2>&1", 'r');
+
+        $line = '';
+    while (! feof($handle)) {
+            $chr = fread($handle, 1);
+            $line .= $chr;
+        if ($chr == "\n") {
+                print str_replace("\n", "<br>\n", $line);
+                $line = '';
+                flush();
+        } elseif (strlen($line) > $line_length) {
+                print $line."<br>\n";
+                $line = '';
+                flush();
+        }
+    }
+        print $line."<br>\n";
+    flush();
+    return;
+}
