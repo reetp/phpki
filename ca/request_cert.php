@@ -209,8 +209,8 @@ switch ($form_stage) {
         <p><form action='<?php echo $PHP_SELF?>' method=post>
     <?php echo  $hidden_fields ?>
     <input type=hidden name=form_stage value=final>
-    <input type=submit name=submit value='Yes.  Create and Download' >&nbsp;
-    <input type=submit name=submit value='Yes.  Just Create' >&nbsp;
+    <input type=submit name=submit value='Yes. Create and Download' >&nbsp;
+    <input type=submit name=submit value='Yes. Just Create' >&nbsp;
     <input type=submit name=submit value='Go Back'>
     </form>
 
@@ -234,7 +234,7 @@ switch ($form_stage) {
         break;
 
     case 'final':
-        if ($submit == "Yes  Create and Download" || $submit == "Yes.  Just Create") {
+        if ($submit == "Yes. Create and Download" || $submit == "Yes. Just Create") {
             if (! $serial = CAdb_in($email, $common_name)) {
                 list($ret,$errtxt) = CA_create_cert($cert_type, $country, $province, $locality, $organization, $unit, $common_name, $email, $expiry, $passwd, $keysize, $dns_names, $ip_addr);
 
@@ -263,7 +263,7 @@ switch ($form_stage) {
             }
         }
 
-        if ($submit == "Yes  Create and Download") {
+        if ($submit == "Yes. Create and Download") {
             switch ($cert_type) {
                 case 'server':
         #               upload(array("$config[private_dir]/$serial-key.pem","$config[new_certs_dir]/$serial.pem",$config['cacert_pem']), "$common_name ($email).pem",'application/pkix-cert');
