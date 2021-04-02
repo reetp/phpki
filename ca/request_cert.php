@@ -207,29 +207,29 @@ switch ($form_stage) {
 
         <h4>Are you sure? After creation you will be returned to the Create Certificate dialogue.</h4>
         <p><form action='<?php echo $PHP_SELF?>' method=post>
-    <?php echo  $hidden_fields ?>
-    <input type=hidden name=form_stage value=final>
-    <input type=submit name=submit value='Yes. Create and Download' >&nbsp;
-    <input type=submit name=submit value='Yes. Just Create' >&nbsp;
-    <input type=submit name=submit value='Go Back'>
-    </form>
+        <?php echo  $hidden_fields ?>
+        <input type=hidden name=form_stage value=final>
+        <!-- <input type=submit name=submit value='Yes. Create and Download' >&nbsp; -->
+        <input type=submit name=submit value='Yes. Just Create' >&nbsp;
+        <input type=submit name=submit value='Go Back'>
+        </form>
 
-    <?php
-    printFooter();
+        <?php
+        printFooter();
 
-    # Save user's defaults
-    $fp = fopen($user_cnf, 'w');
-    $x = '<?php
-    $country      = \''.addslashes($country).'\';
-    $locality     = \''.addslashes($locality).'\';
-    $province     = \''.addslashes($province).'\';
-    $organization = \''.addslashes($organization).'\';
-    $unit         = \''.addslashes($unit).'\';
-    $expiry       = \''.addslashes($expiry).'\';
-    $keysize      = \''.addslashes($keysize).'\';
-    ?>';
-    fwrite($fp, $x);
-    fclose($fp);
+        # Save user's defaults
+        $fp = fopen($user_cnf, 'w');
+        $x = '<?php
+        $country      = \''.addslashes($country).'\';
+        $locality     = \''.addslashes($locality).'\';
+        $province     = \''.addslashes($province).'\';
+        $organization = \''.addslashes($organization).'\';
+        $unit         = \''.addslashes($unit).'\';
+        $expiry       = \''.addslashes($expiry).'\';
+        $keysize      = \''.addslashes($keysize).'\';
+        ?>';
+        fwrite($fp, $x);
+        fclose($fp);
 
         break;
 
@@ -263,21 +263,27 @@ switch ($form_stage) {
             }
         }
 
+        
+        // This section is disabled in the form above
+        // If we do Download it does not return to Create New cert
+        // I believe this is because the upload function messes the http headers
+        // There may be a solution but I haven't got one
+        
         if ($submit == "Yes. Create and Download") {
             switch ($cert_type) {
                 case 'server':
-        #               upload(array("$config[private_dir]/$serial-key.pem","$config[new_certs_dir]/$serial.pem",$config['cacert_pem']), "$common_name ($email).pem",'application/pkix-cert');
+                    # upload(array("$config[private_dir]/$serial-key.pem","$config[new_certs_dir]/$serial.pem",$config['cacert_pem']), "$common_name ($email).pem",'application/pkix-cert');
                     upload(array($config['private_dir'] . "/$serial-key.pem",$config['new_certs_dir'] . "/$serial.pem",$config['cacert_pem']), $rec['common_name'] . "-Bundle.pem", 'application/pkix-cert');
-                    break;
+                    break; # << Here
                 case 'email':
                 case 'email_signing':
                 case 'time_stamping':
                 case 'vpn_client_server':
                 case 'vpn_client':
                 case 'vpn_server':
-        #               upload("$config[pfx_dir]/$serial.pfx", "$common_name ($email).p12", 'application/x-pkcs12');
+                    # upload("$config[pfx_dir]/$serial.pfx", "$common_name ($email).p12", 'application/x-pkcs12');
                     upload($config['pfx_dir'] . "/$serial.pfx", $rec['common_name'] . ".p12", 'application/x-pkcs12');
-                    break;
+                    break; # << here
             }
 
             # Clear common_name fields
